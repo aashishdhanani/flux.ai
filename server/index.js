@@ -1,10 +1,19 @@
 const express = require('express');
 const mongoose = require("mongoose");
+const bcrypt = require('bcrypt');
 const app = express();
 
 const cors = require('cors');
 
-app.use(cors())
+app.use(cors({
+  origin: ["http://localhost:3000"],
+  methods: ["POST", "GET"],
+  credentials: true
+}));
+
+app.use(express.json());  // This is critical for parsing JSON bodies
+app.use(express.urlencoded({ extended: true }));
+
 
 //connect to mongo
 mongoose.connect('mongodb://localhost:27017/fluxai', {
@@ -21,7 +30,7 @@ mongoose.connect('mongodb://localhost:27017/fluxai', {
 
 //user schema
 const userSchema = new mongoose.Schema({
-  userName: {type: String, required: true, unique: true},
+  username: {type: String, required: true, unique: true},
   email: { type: String, required: true},
   password: { type: String, required: true },
 });
@@ -41,7 +50,8 @@ module.exports = {Product};
 
 //register route
 app.post('/register', async (req, res) => {
-  const {userName, email, password } = req.body;
+  const {username, email, password} = req.body;
+  console.log(req.body);
 
   // Validate input
   if (!email || !password) {
@@ -49,8 +59,8 @@ app.post('/register', async (req, res) => {
   }
 
   try {
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ userName, email, password: hashedPassword });
+    //const hashedPassword = await bcrypt.hash(password, 10);
+    const newUser = new User({ username, email, password });
     const user = await newUser.save();
     res.json({ message: 'Registration successful', user });
   } catch (err) {
@@ -60,14 +70,16 @@ app.post('/register', async (req, res) => {
 
 //login route
 app.post('/login', async (req, res) => {
-  const {userName, email, password} = req.body;
+  const {username, password} = req.body;
+  console.log(req.body);
 
-  if (!userName || !password) {
+  if (!username || !password) {
     return res.status(400).json({ message: 'Name and password are required' });
   }
 
   try {
-    const user = await User.findOne({ userName });
+    const user = await User.findOne({ username });
+    console.log(user);
 
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
@@ -86,7 +98,7 @@ app.post('/login', async (req, res) => {
 });
 
 
-const PORT = process.env.PORT || 8080;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });

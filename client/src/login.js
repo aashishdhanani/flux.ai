@@ -15,7 +15,7 @@ function Login() {
   // Called when Sign In is pressed
   const handleLoginSubmit = (e) => {
       e.preventDefault();
-      axios.post('http://localhost:9000/account/login', loginValues)
+      axios.post('http://localhost:5001/login', loginValues)
           .then(res => {
               // Server sends back status message, display it
               alert(res.data.message);
@@ -35,26 +35,28 @@ function Login() {
       username: '',
       email: '',
       password: '',
-      passwordConfirm: ''
   });
 
 
   // Called when Create Account is pressed
-  const handleAccountSubmit = (e) => {
-      e.preventDefault();
-      if (accountValues.password === accountValues.passwordConfirm) {
-          axios.post('http://localhost:8080/register', accountValues)
-              .then(res => {
-                  // Server sends back status message, display it
-                  alert(res.data);
-                  console.log(res);
-              })
-              .catch(err => console.log(err));
-      } else {
-          // display passwords do not match
-          console.log('passwords do not match');
-      }
-  };
+  const handleAccountSubmit = async (e) => {
+    e.preventDefault(); // Important! Prevents form from default submission
+    
+    // Log to see what we're sending
+    console.log("Sending data:", accountValues);
+
+    try {
+        const response = await axios.post('http://localhost:5001/register', {
+            username: accountValues.username,
+            email: accountValues.email,
+            password: accountValues.password
+        });
+        console.log("Success:", response.data);
+    } catch (error) {
+        console.error("Error:", error);
+    }
+};
+ 
 
   return (
 
@@ -67,9 +69,9 @@ function Login() {
                   </div>
 
                   <form className="user-pass" onSubmit={handleLoginSubmit}>
-                      <input type="text" className="login-input" placeholder="Username:" required="required" minLength="5" maxLength="20"
+                      <input type="text" className="login-input" placeholder="Username:" 
                           onChange={e => setLoginValues({ ...loginValues, username: e.target.value })}></input>
-                      <input type="password" className="login-input" placeholder="Password:" required="required" minLength="8" maxLength="20"
+                      <input type="password" className="login-input" placeholder="Password:" 
                           onChange={e => setLoginValues({ ...loginValues, password: e.target.value })}></input>
 
                       <div className="login-submit">
@@ -84,13 +86,13 @@ function Login() {
                   </div>
 
                   <form className="user-pass" onSubmit={handleAccountSubmit}>
-                      <input type="text" className="login-input" placeholder="Set Username:" required="required" minLength="5" maxLength="20"
+                      <input type="text" className="login-input" placeholder="Set Username:" 
                           onChange={e => setAccountValues({ ...accountValues, username: e.target.value })}></input>
-                      <input type="text" className="login-input" placeholder="Email:" required="required" minLength="5" maxLength="20"
+                      <input type="text" className="login-input" placeholder="Email:" 
                           onChange={e => setAccountValues({ ...accountValues, email: e.target.value })}></input>
-                      <input type="password" className="login-input" placeholder="Set Password:" required="required" minLength="8" maxLength="20"
+                      <input type="password" className="login-input" placeholder="Set Password:" 
                           onChange={e => setAccountValues({ ...accountValues, password: e.target.value })}></input>
-                      <input type="password" className="login-input" placeholder=" Confirm Password:" required="required" minLength="8" maxLength="20"
+                      <input type="password" className="login-input" placeholder=" Confirm Password:" 
                           onChange={e => setAccountValues({ ...accountValues, passwordConfirm: e.target.value })}></input>
 
                       <div className="signup-submit">

@@ -1,21 +1,15 @@
 {
     "manifest_version": 3,
-    "name": "DeLorean Time Tracker",
-    "version": "1.985",
-    "description": "Great Scott! Track your temporal adventures through e-commerce sites at precisely 88 clicks per hour!",
-    "icons": {
-      "48": "delorean48.png",
-      "128": "delorean128.png"
-    },
+    "name": "Product Tracker",
+    "version": "1.0",
+    "description": "Tracks product information across various e-commerce platforms",
     "permissions": [
       "activeTab",
       "storage",
       "tabs"
     ],
     "host_permissions": [
-      "*://*.amazon.com/*",
-      "*://*.ebay.com/*",
-      "*://*.walmart.com/*"
+      "http://localhost:3000/*"
     ],
     "background": {
       "service_worker": "background.js"
@@ -24,7 +18,9 @@
       "matches": [
         "*://*.amazon.com/*",
         "*://*.ebay.com/*",
-        "*://*.walmart.com/*"
+        "*://*.walmart.com/*",
+        "*://*.bestbuy.com/*",
+        "*://*.target.com/*"
       ],
       "js": ["content.js"]
     }]

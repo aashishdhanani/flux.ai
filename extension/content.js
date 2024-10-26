@@ -1,107 +1,169 @@
-class TimeCircuit {
+// content.js
+class ProductTracker {
     constructor() {
-      this.fluxCapacitor = new Date();
-      this.currentProduct = null;
-      this.gigawattsConsumed = 0;
-      this.initializeFluxCapacitor();
-    }
-  
-    initializeFluxCapacitor() {
-      if (this.isTemporalDestination()) {
-        this.currentProduct = this.scanTemporalCoordinates();
-        this.logTemporalJump();
-        this.monitorTemporalFlux();
-      }
-    }
-  
-    isTemporalDestination() {
-      // Check if we're on a product page
-      return window.location.href.includes('/dp/') || // Amazon
-             window.location.href.includes('/itm/') || // eBay
-             window.location.href.includes('/ip/');    // Walmart
-    }
-  
-    scanTemporalCoordinates() {
-      // Extract product information
-      const destinationTime = {
-        productName: document.querySelector('h1')?.textContent || 'Flux Capacitor',
-        plutoniumCost: document.querySelector('.price')?.textContent || '1.21 Gigawatts',
-        temporalLocation: window.location.href,
-        timestamp: this.getHillValleyTime()
+      // Store selectors for different e-commerce platforms
+      this.selectors = {
+        amazon: {
+          title: '#productTitle',
+          price: '.a-price-whole',
+          rating: '#acrPopover .a-text-bold',
+          reviews: '#acrCustomerReviewText',
+          availability: '#availability span',
+          category: '#wayfinding-breadcrumbs_container',
+        },
+        ebay: {
+          title: '.x-item-title__mainTitle',
+          price: '.x-price-primary',
+          rating: '.rating-stars',
+          reviews: '.review-item-count',
+          availability: '.d-quantity__availability',
+          category: '.breadcrumbs',
+        },
+        walmart: {
+          title: '[itemprop="name"]',
+          price: '[itemprop="price"]',
+          rating: '.rating-number',
+          reviews: '.review-count',
+          availability: '.prod-ProductOffer-oosMsg',
+          category: '.breadcrumb',
+        },
+        bestbuy: {
+          title: '.heading-5',
+          price: '.priceView-current-price',
+          rating: '.ratingsReviews',
+          reviews: '.review-count',
+          availability: '.fulfillment-add-to-cart-button',
+          category: '.breadcrumb',
+        },
+        target: {
+          title: '[data-test="product-title"]',
+          price: '[data-test="product-price"]',
+          rating: '.RatingStars',
+          reviews: '.h-text-sm',
+          availability: '.h-text-availability',
+          category: '.Breadcrumb',
+        }
       };
   
-      return destinationTime;
+      this.sessionStartTime = new Date();
+      this.pageLoadTime = new Date();
+      this.currentPlatform = this.detectPlatform();
+      this.initialize();
     }
   
-    getHillValleyTime() {
-      const now = new Date();
-      return now.toLocaleString('en-US', { 
-        timeZone: 'America/Los_Angeles',
-        timeZoneName: 'short'
-      });
+    // Detect which e-commerce platform we're on
+    detectPlatform() {
+      const hostname = window.location.hostname;
+      if (hostname.includes('amazon')) return 'amazon';
+      if (hostname.includes('ebay')) return 'ebay';
+      if (hostname.includes('walmart')) return 'walmart';
+      if (hostname.includes('bestbuy')) return 'bestbuy';
+      if (hostname.includes('target')) return 'target';
+      return null;
     }
   
-    logTemporalJump() {
-      chrome.runtime.sendMessage({
-        type: 'TEMPORAL_ENTRY',
-        data: {
-          ...this.currentProduct,
-          startTime: this.fluxCapacitor.toISOString(),
-          message: "Doc, we've arrived at the product page!",
-          speedometer: 0
-        }
-      });
+    // Check if current page is a product page
+    isProductPage() {
+      const url = window.location.href;
+      const patterns = {
+        amazon: /\/dp\/|\/gp\/product\//,
+        ebay: /\/itm\//,
+        walmart: /\/ip\//,
+        bestbuy: /\/products\//,
+        target: /\/p\//
+      };
+  
+      return this.currentPlatform && patterns[this.currentPlatform].test(url);
     }
   
-    monitorTemporalFlux() {
-      // Track scroll speed
-      let lastScrollPosition = 0;
-      let lastScrollTime = Date.now();
+    // Extract product information using platform-specific selectors
+    getProductInfo() {
+      if (!this.currentPlatform) return null;
+      const platformSelectors = this.selectors[this.currentPlatform];
+      const getTextContent = (selector) => {
+        const element = document.querySelector(selector);
+        return element ? element.textContent.trim() : null;
+      };
   
+      return {
+        platform: this.currentPlatform,
+        productUrl: window.location.href,
+        productDetails: getTextContent(platformSelectors.title),
+        price: getTextContent(platformSelectors.price),
+        rating: getTextContent(platformSelectors.rating),
+        reviews: getTextContent(platformSelectors.reviews),
+        availability: getTextContent(platformSelectors.availability),
+        category: getTextContent(platformSelectors.category),
+        timestamp: new Date().toISOString(),
+        sessionId: this.generateSessionId()
+      };
+    }
+  
+    // Generate unique session ID
+    generateSessionId() {
+      return `${this.currentPlatform}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    }
+  
+    // Track user interaction metrics
+    trackUserInteraction() {
+      let scrollDepth = 0;
+      let lastScrollTime = null;
+  
+      // Track scroll depth
       document.addEventListener('scroll', () => {
-        const currentPosition = window.scrollY;
-        const currentTime = Date.now();
-        const timeDiff = currentTime - lastScrollTime;
-        
-        if (timeDiff > 0) {
-          const scrollSpeed = Math.abs(currentPosition - lastScrollPosition) / timeDiff;
-          this.gigawattsConsumed += scrollSpeed * 0.00121; // Convert to Gigawatts
-  
-          if (scrollSpeed > 88) {
-            console.log("🚗 ⚡ Time travel in progress!");
-          }
-        }
-  
-        lastScrollPosition = currentPosition;
-        lastScrollTime = currentTime;
+        const currentScroll = window.scrollY;
+        const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
+        scrollDepth = Math.max(scrollDepth, (currentScroll / maxScroll) * 100);
+        lastScrollTime = new Date();
       });
+  
+      // Return tracking data when needed
+      return {
+        scrollDepth: Math.round(scrollDepth),
+        timeSpent: lastScrollTime ? 
+          Math.round((lastScrollTime - this.pageLoadTime) / 1000) : 0
+      };
     }
   
-    async returnToPresent() {
-      if (this.currentProduct) {
-        const presentTime = new Date();
-        const timeSpentInPast = presentTime - this.fluxCapacitor;
-        
-        await chrome.runtime.sendMessage({
-          type: 'TEMPORAL_EXIT',
+    // Initialize tracking
+    initialize() {
+      console.log("It is being started")
+      if (!this.isProductPage()){
+        console.log("not page")
+        return;
+      } 
+  
+      const productInfo = this.getProductInfo();
+      if (!productInfo) return;
+  
+      // Send initial page view data
+      chrome.runtime.sendMessage({
+        type: 'PRODUCT_VIEW',
+        data: {
+          ...productInfo,
+          event: 'page_view'
+        }
+      });
+      console.log('message sent')
+  
+      // Track user interaction
+      const interactionMetrics = this.trackUserInteraction();
+  
+      // Send data when user leaves page
+      window.addEventListener('beforeunload', () => {
+        chrome.runtime.sendMessage({
+          type: 'PRODUCT_EXIT',
           data: {
-            ...this.currentProduct,
-            timeSpentSeconds: Math.round(timeSpentInPast / 1000),
-            gigawattsConsumed: this.gigawattsConsumed.toFixed(3),
-            endTime: presentTime.toISOString(),
-            message: "Roads? Where we're going, we don't need roads!"
+            ...productInfo,
+            ...interactionMetrics,
+            event: 'page_exit',
+            totalTimeSpent: Math.round((new Date() - this.sessionStartTime) / 1000)
           }
         });
-      }
+      });
     }
   }
   
-  // Initialize time circuits
-  const delorean = new TimeCircuit();
-  
-  // Listen for temporal distortions (page unload)
-  window.addEventListener('beforeunload', () => {
-    delorean.returnToPresent();
-  });
-  
-  
+  // Initialize tracker when page loads
+  new ProductTracker();
+  console.log("Content script loaded on:", window.location.href);

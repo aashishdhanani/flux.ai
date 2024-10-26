@@ -1,45 +1,58 @@
-class TemporalDataLogger {
+class ProductAnalyticsService {
     constructor() {
-      this.FLUX_CAPACITOR_ENDPOINT = 'YOUR_API_ENDPOINT';
-      this.initializeTimeMachine();
+      this.API_BASE_URL = 'http://localhost:3000/api';
+      this.MAX_RETRIES = 3;
+      this.RETRY_DELAY = 1000;
+      this.initializeMessageListener();
     }
   
-    initializeTimeMachine() {
-      chrome.runtime.onMessage.addListener((temporal, sender, sendResponse) => {
-        if (temporal.type === 'TEMPORAL_ENTRY' || temporal.type === 'TEMPORAL_EXIT') {
-          this.logTemporalEvent(temporal.data);
+    // Initialize Chrome message listener
+    initializeMessageListener() {
+      chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+        if (['PRODUCT_VIEW', 'PRODUCT_EXIT'].includes(message.type)) {
+          this.sendToServer(message.data, sender.tab.id)
+            .then(response => sendResponse(response))
+            .catch(error => sendResponse({ error: error.message }));
+          return true; // Keep message channel open for async response
         }
       });
     }
   
-    async logTemporalEvent(temporalData) {
+    // Send data to backend server with retry logic
+    async sendToServer(data, tabId, attempt = 1) {
       try {
-        console.log(`⚡ Charging flux capacitor with ${temporalData.gigawattsConsumed || 1.21} gigawatts`);
-        
-        const response = await fetch(this.FLUX_CAPACITOR_ENDPOINT, {
+        const response = await fetch(`${this.API_BASE_URL}/events`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
-            'X-Flux-Capacitor': 'Enabled'
+            'X-Extension-ID': chrome.runtime.id,
+            'X-Tab-ID': tabId.toString()
           },
           body: JSON.stringify({
-            ...temporalData,
-            docBrownTimestamp: new Date().toISOString(),
-            fluxCapacitorStatus: 'CHARGED'
+            ...data,
+            extensionVersion: chrome.runtime.getManifest().version,
+            recordedAt: new Date().toISOString()
           })
         });
   
         if (!response.ok) {
-          throw new Error('Great Scott! Something went wrong!');
+          throw new Error(`Server responded with status: ${response.status}`);
         }
   
-        console.log(`🚗 ⚡ Temporal data successfully logged at ${temporalData.timestamp}`);
-        
+        return await response.json();
+  
       } catch (error) {
-        console.error(`Heavy! Temporal logging failed: ${error.message}`);
+        console.error(`Error sending data (attempt ${attempt}):`, error);
+  
+        if (attempt < this.MAX_RETRIES) {
+          await new Promise(resolve => setTimeout(resolve, this.RETRY_DELAY));
+          return this.sendToServer(data, tabId, attempt + 1);
+        }
+  
+        throw error;
       }
     }
   }
   
-  // Initialize the temporal logger
-  const docBrown = new TemporalDataLogger();
+  // Initialize analytics service
+  new ProductAnalyticsService();

@@ -1,0 +1,8 @@
+body {
+  background-image: url('../../public/sunset.jpg');
+  background-size: cover; /*Adjust the background size as needed*/
+  background-repeat: no-repeat;
+  /* background-position: c; */
+  width: 100%;
+  height: 100%;
+}

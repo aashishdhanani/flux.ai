@@ -1,8 +1,5 @@
-import logo from './logo.svg';
-import './App.css';
-
 import axios from 'axios';
-import './App.css';
+import './styles/App.css';
 
 //data will be the string we send from our server
 const apiCall = () => {

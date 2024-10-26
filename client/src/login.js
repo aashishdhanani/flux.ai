@@ -1,109 +1,297 @@
-import axios from 'axios';
-import { React, useState } from 'react';
-import './styles/login.css';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-function Login() {
-    const navigate = useNavigate();
-  
-  // This line must be present on every main page so that session information is circulated properly
+import axios from 'axios';
+
+const Login = () => {
+  const navigate = useNavigate();
   axios.defaults.withCredentials = true;
 
-  // Keeps track of the values the user has entered in the Log In fields
   const [loginValues, setLoginValues] = useState({
-      username: '',
-      password: ''
+    username: '',
+    password: ''
   });
-  // Called when Sign In is pressed
-  const handleLoginSubmit = (e) => {
-      e.preventDefault();
-      axios.post('http://localhost:5001/login', loginValues)
-          .then(res => {
-              // Server sends back status message, display it
-              alert(res.data.message);
-              console.log(res);
 
-              // Server sends back a boolean success, indicating if login was successful
-              if (res.status === 200) {
-                  // Redirect to home page
-                  navigate('/home'); 
-                }
-          })
-          .catch(err => console.log(err));
+  const [accountValues, setAccountValues] = useState({
+    username: '',
+    email: '',
+    password: '',
+    passwordConfirm: ''
+  });
+
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+    axios.post('http://localhost:5001/login', loginValues)
+      .then(res => {
+        alert(res.data.message);
+        if (res.status === 200) {
+          navigate('/home');
+        }
+      })
+      .catch(err => console.log(err));
   };
 
-  // Keeps track of the values the user has entered in the Sign Up fields
-  const [accountValues, setAccountValues] = useState({
-      username: '',
-      email: '',
-      password: '',
-  });
-
-
-  // Called when Create Account is pressed
   const handleAccountSubmit = async (e) => {
-    e.preventDefault(); // Important! Prevents form from default submission
-    
-    // Log to see what we're sending
-    console.log("Sending data:", accountValues);
-
+    e.preventDefault();
     try {
-        const response = await axios.post('http://localhost:5001/register', {
-            username: accountValues.username,
-            email: accountValues.email,
-            password: accountValues.password
+      const response = await axios.post('http://localhost:5001/register', {
+        username: accountValues.username,
+        email: accountValues.email,
+        password: accountValues.password
+      }).then(res => {
+        alert(res.data.message);
+        setAccountValues({
+            username: '',
+            email: '',
+            password: '',
+            passwordConfirm: ''
         });
-        console.log("Success:", response.data);
+      });
+      console.log("Success:", response.data);
     } catch (error) {
-        console.error("Error:", error);
+      console.error("Error:", error);
     }
-};
- 
+  };
+
+  const styles = {
+    container: {
+      minHeight: '100vh',
+      padding: '2rem',
+      background: 'linear-gradient(135deg, #1a1a1a, #2D9CCE 140%)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      fontFamily: "'Segoe UI', 'Roboto', sans-serif"
+    },
+    title: {
+      fontSize: '4.5rem',
+      fontWeight: '800',
+      background: 'linear-gradient(45deg, #F7DC11, #E4801D)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      textAlign: 'center',
+      marginBottom: '3rem',
+      letterSpacing: '0.15em',
+      textShadow: '2px 2px 20px rgba(247, 220, 17, 0.3)',
+      transform: 'perspective(500px) translateZ(0)',
+      transition: 'transform 0.3s ease'
+    },
+    formContainer: {
+      display: 'flex',
+      gap: '3rem',
+      maxWidth: '15000px',
+      width: '100%',
+      flexWrap: 'wrap',
+      justifyContent: 'center',
+      perspective: '1000px'
+    },
+    formSection: {
+      flex: '1 1 400px',
+      background: 'linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8))',
+      backdropFilter: 'blur(20px)',
+      padding: '2.5rem',
+      borderRadius: '20px',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)',
+      margin: '1rem',
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      transform: 'translateZ(0)'
+    },
+    loginSection: {
+      borderLeft: '3px solid #B50D13'
+    },
+    signupSection: {
+      borderLeft: '3px solid #2D9CCE'
+    },
+    sectionTitle: {
+      fontSize: '1.8rem',
+      fontWeight: '600',
+      color: '#F7DC11',
+      textAlign: 'left',
+      marginBottom: '2rem',
+      letterSpacing: '0.05em'
+    },
+    inputGroup: {
+        position: 'relative',
+        marginBottom: '1.5rem',
+        //display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+    },
+    input: {
+        width: '90%', // Reduced from 100% to give some margin on sides
+        padding: '1rem 1.2rem',
+        backgroundColor: 'rgba(0, 0, 0, 0.3)',
+        border: '1px solid rgba(255, 255, 255, 0.1)',
+        borderRadius: '12px',
+        color: '#fff',
+        fontSize: '1rem',
+        outline: 'none',
+        transition: 'all 0.3s ease',
+        letterSpacing: '0.03em',
+        textAlign: 'center' // Centers the text inside input
+    },
+    button: {
+      width: '100%',
+      padding: '1rem',
+      border: 'none',
+      borderRadius: '12px',
+      fontWeight: '600',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      fontSize: '1rem',
+      letterSpacing: '0.05em',
+      marginTop: '2rem',
+      position: 'relative',
+      overflow: 'hidden'
+    },
+    loginButton: {
+      background: 'linear-gradient(45deg, #B50D13, #D85116)',
+      color: 'white',
+      boxShadow: '0 4px 15px rgba(181, 13, 19, 0.3)'
+    },
+    signupButton: {
+      background: 'linear-gradient(45deg, #2D9CCE, #E4801D)',
+      color: 'white',
+      boxShadow: '0 4px 15px rgba(45, 156, 206, 0.3)'
+    }
+  };
+
+  // Enhanced hover effects
+  const handleSectionHover = (e, enter) => {
+    if (enter) {
+      e.currentTarget.style.transform = 'translateZ(20px)';
+      e.currentTarget.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.4)';
+    } else {
+      e.currentTarget.style.transform = 'translateZ(0)';
+      e.currentTarget.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.3)';
+    }
+  };
+
+  const handleInputFocus = (e, focus) => {
+    if (focus) {
+      e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+      e.target.style.borderColor = '#F7DC11';
+      e.target.style.boxShadow = '0 0 15px rgba(247, 220, 17, 0.1)';
+    } else {
+      e.target.style.backgroundColor = 'rgba(0, 0, 0, 0.3)';
+      e.target.style.borderColor = 'rgba(255, 255, 255, 0.1)';
+      e.target.style.boxShadow = 'none';
+    }
+  };
+
+  const handleButtonHover = (e, enter) => {
+    if (enter) {
+      e.target.style.transform = 'translateY(-2px)';
+      e.target.style.boxShadow = '0 6px 20px rgba(247, 220, 17, 0.2)';
+    } else {
+      e.target.style.transform = 'translateY(0)';
+      e.target.style.boxShadow = '0 4px 15px rgba(181, 13, 19, 0.3)';
+    }
+  };
 
   return (
+    <div style={styles.container}>
+      <h1 style={styles.title}>FLUX</h1>
+      
+      <div style={styles.formContainer}>
+        {/* Login Section */}
+        <div 
+          style={{...styles.formSection, ...styles.loginSection}}
+          onMouseEnter={(e) => handleSectionHover(e, true)}
+          onMouseLeave={(e) => handleSectionHover(e, false)}
+        >
+          <h2 style={styles.sectionTitle}>Already have an account? Login Here!</h2>
+          <form onSubmit={handleLoginSubmit}>
+            <div style={styles.inputGroup}>
+              <input
+                type="text"
+                placeholder="Username"
+                onChange={e => setLoginValues({ ...loginValues, username: e.target.value })}
+                style={styles.input}
+                onFocus={(e) => handleInputFocus(e, true)}
+                onBlur={(e) => handleInputFocus(e, false)}
+              />
+            </div>
+            <div style={styles.inputGroup}>
+              <input
+                type="password"
+                placeholder="Password"
+                onChange={e => setLoginValues({ ...loginValues, password: e.target.value })}
+                style={styles.input}
+                onFocus={(e) => handleInputFocus(e, true)}
+                onBlur={(e) => handleInputFocus(e, false)}
+              />
+            </div>
+            <button
+              type="submit"
+              style={{...styles.button, ...styles.loginButton}}
+              onMouseEnter={(e) => handleButtonHover(e, true)}
+              onMouseLeave={(e) => handleButtonHover(e, false)}
+            >
+              Login
+            </button>
+          </form>
+        </div>
 
-      <div>
-          <h1 >Flux</h1>
-          <div>
-              <div>
-                  <div>
-                      <h2>Please Log In</h2>
-                  </div>
-
-                  <form className="user-pass" onSubmit={handleLoginSubmit}>
-                      <input type="text" className="login-input" placeholder="Username:" 
-                          onChange={e => setLoginValues({ ...loginValues, username: e.target.value })}></input>
-                      <input type="password" className="login-input" placeholder="Password:" 
-                          onChange={e => setLoginValues({ ...loginValues, password: e.target.value })}></input>
-
-                      <div className="login-submit">
-                          <input type="submit" className="login-button" value="Sign In"></input>
-                      </div>
-                  </form>
-              </div>
-              <h3 className="or-text">or</h3>
-              <div className="signup">
-                  <div className="subtitle">
-                      <h2>Sign Up</h2>
-                  </div>
-
-                  <form className="user-pass" onSubmit={handleAccountSubmit}>
-                      <input type="text" className="login-input" placeholder="Set Username:" 
-                          onChange={e => setAccountValues({ ...accountValues, username: e.target.value })}></input>
-                      <input type="text" className="login-input" placeholder="Email:" 
-                          onChange={e => setAccountValues({ ...accountValues, email: e.target.value })}></input>
-                      <input type="password" className="login-input" placeholder="Set Password:" 
-                          onChange={e => setAccountValues({ ...accountValues, password: e.target.value })}></input>
-                      <input type="password" className="login-input" placeholder=" Confirm Password:" 
-                          onChange={e => setAccountValues({ ...accountValues, passwordConfirm: e.target.value })}></input>
-
-                      <div className="signup-submit">
-                          <input type="submit" className="signup-button" value="Create Account"></input>
-                      </div>
-                  </form>
-              </div>
-          </div>
+        {/* Sign Up Section */}
+        <div 
+          style={{...styles.formSection, ...styles.signupSection}}
+          onMouseEnter={(e) => handleSectionHover(e, true)}
+          onMouseLeave={(e) => handleSectionHover(e, false)}
+        >
+          <h2 style={styles.sectionTitle}>New to Flux? Sign up Here!</h2>
+          <form onSubmit={handleAccountSubmit}>
+            <div style={styles.inputGroup}>
+            <input
+                type="text"
+                placeholder="Username"
+                value={accountValues.username}  // Add this line
+                onChange={e => setAccountValues({ ...accountValues, username: e.target.value })}
+                style={styles.input}
+                onFocus={(e) => handleInputFocus(e, true)}
+                onBlur={(e) => handleInputFocus(e, false)}
+            />
+            <input
+                type="text"
+                placeholder="Email"
+                value={accountValues.email}     // Add this line
+                onChange={e => setAccountValues({ ...accountValues, email: e.target.value })}
+                style={styles.input}
+                onFocus={(e) => handleInputFocus(e, true)}
+                onBlur={(e) => handleInputFocus(e, false)}
+            />
+            <input
+                type="password"
+                placeholder="Password"
+                value={accountValues.password}  // Add this line
+                onChange={e => setAccountValues({ ...accountValues, password: e.target.value })}
+                style={styles.input}
+                onFocus={(e) => handleInputFocus(e, true)}
+                onBlur={(e) => handleInputFocus(e, false)}
+            />
+            <input
+                type="password"
+                placeholder="Confirm Password"
+                value={accountValues.passwordConfirm}  // Add this line
+                onChange={e => setAccountValues({ ...accountValues, passwordConfirm: e.target.value })}
+                style={styles.input}
+                onFocus={(e) => handleInputFocus(e, true)}
+                onBlur={(e) => handleInputFocus(e, false)}
+            />
+            </div>
+            <button
+              type="submit"
+              style={{...styles.button, ...styles.signupButton}}
+              onMouseEnter={(e) => handleButtonHover(e, true)}
+              onMouseLeave={(e) => handleButtonHover(e, false)}
+            >
+              Sign Up
+            </button>
+          </form>
+        </div>
       </div>
+    </div>
   );
-}
+};
 
 export default Login;

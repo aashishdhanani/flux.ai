@@ -1,151 +1,219 @@
 import React, { useState } from 'react';
 import { Clock, Zap, Eye, Brain, PiggyBank } from 'lucide-react';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
 
 const DashboardCard = ({ title, icon: Icon, children, color }) => {
-    const [isHovered, setIsHovered] = useState(false);
-  
-    return (
-      <Card 
-        className={`group relative overflow-hidden bg-gradient-to-br from-gray-900 to-gray-800 transition-all duration-300 w-100 ${
-          isHovered ? 'transform scale-[1.02]' : ''
-        }`}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        {/* Animated borders */}
-        <div className="absolute inset-0 p-[2px] rounded-lg transition-opacity"
-          style={{
-            background: `linear-gradient(to right, ${color}, ${color}40)`,
-            opacity: isHovered ? 1 : 0.3
-          }}
-        >
-          <div className="h-full w-full bg-gradient-to-br from-gray-900 to-gray-800 rounded-lg" />
-        </div>
-  
-        {/* Card Content */}
-        <div className="relative z-10 p-6 h-[300px] flex flex-col">
-          <CardContent className="p-0 mb-4">
-            <div className="flex items-center gap-3">
-              <div 
-                className="transition-transform duration-300" 
-                style={{ color }}
-              >
-                <Icon 
-                  size={32} 
-                  className={`transition-all duration-300 ${isHovered ? 'scale-110' : ''}`} 
-                />
-              </div>
-              <h2 
-                className="text-2xl font-semibold font-mono transition-colors duration-300" 
-                style={{ color }}
-              >
-                {title}
-              </h2>
-            </div>
-          </CardContent>
-  
-          <CardContent className="p-0 flex-1 flex items-center justify-center">
-            {children}
-          </CardContent>
-  
-          {/* Hover Effects */}
-          <div
-            className="absolute inset-0 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+  const [isHovered, setIsHovered] = useState(false);
+
+  const styles = {
+    card: {
+      position: 'relative',
+      padding: '2rem',
+      height: '300px',
+      background: 'linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8))',
+      borderRadius: '20px',
+      backdropFilter: 'blur(20px)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      transition: 'transform 0.3s ease, box-shadow 0.3s ease',
+      overflow: 'hidden'
+    },
+    cardContent: {
+      height: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      position: 'relative',
+      zIndex: 2
+    },
+    headerSection: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '1rem',
+      marginBottom: '1.5rem'
+    },
+    title: {
+      fontSize: '1.5rem',
+      fontWeight: 600,
+      letterSpacing: '0.05em',
+      fontFamily: "'Segoe UI', 'Roboto', sans-serif"
+    },
+    contentSection: {
+      flex: 1,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      textAlign: 'center'
+    },
+    glowBorder: {
+      position: 'absolute',
+      inset: 0,
+      padding: '2px',
+      borderRadius: '20px',
+      background: `linear-gradient(45deg, ${color}40, ${color})`,
+      opacity: isHovered ? 1 : 0.3,
+      transition: 'opacity 0.3s ease'
+    },
+    innerBackground: {
+      position: 'absolute',
+      inset: '2px',
+      borderRadius: '18px',
+      background: 'linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8))'
+    }
+  };
+
+  const handleHover = (hover) => {
+    setIsHovered(hover);
+  };
+
+  return (
+    <div
+      style={{
+        ...styles.card,
+        transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
+        boxShadow: isHovered 
+          ? `0 10px 30px rgba(0, 0, 0, 0.5), 0 0 30px ${color}30` 
+          : '0 8px 32px rgba(0, 0, 0, 0.3)'
+      }}
+      onMouseEnter={() => handleHover(true)}
+      onMouseLeave={() => handleHover(false)}
+    >
+      <div style={styles.glowBorder}>
+        <div style={styles.innerBackground} />
+      </div>
+      
+      <div style={styles.cardContent}>
+        <div style={styles.headerSection}>
+          <Icon
+            size={32}
             style={{
-              background: `linear-gradient(to bottom, transparent 0%, ${color}10 50%, transparent 100%)`,
-              backgroundSize: '100% 200%',
-              animation: 'scan 2s linear infinite'
+              color: color,
+              transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+              transition: 'transform 0.3s ease'
             }}
           />
+          <h2 style={{ ...styles.title, color: color }}>{title}</h2>
         </div>
-      </Card>
-    );
-  };
-  
-  const Home = () => {
-    const colors = {
-      temporal: '#2D9CCE',
-      future: '#B50D13',
-      flux: '#D85116',
-      timeline: '#E4801D',
-      popular: '#F0A81A',
-      savings: '#F7DC11'
-    };
-  
-    return (
-      <div className="min-h-screen bg-black">
-        <style>
-          {`
-            @keyframes scan {
-              0% { background-position: 0 -200%; }
-              100% { background-position: 0 200%; }
-            }
-          `}
-        </style>
-  
-        <div className="container mx-auto px-4 py-8">
-          {/* Header Card */}
-          <Card className="mb-8 bg-gradient-to-r from-[#B50D13] to-[#E4801D] border-0">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h1 className="text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#F7DC11] to-[#B50D13] font-mono">
-                    FLUX
-                  </h1>
-                  <p className="text-[#2D9CCE] font-mono">Your Time-Traveling Shopping Assistant</p>
-                </div>
-                <div className="text-4xl font-mono text-[#2D9CCE]">
-                  88:88
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-  
-          {/* Dashboard Cards Grid */}
-          <div className="flex flex-col items-center">
-            <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-8 justify-items-center">
-              <DashboardCard title="Temporal Log" icon={Eye} color={colors.temporal}>
-                <p className="text-[#2D9CCE] font-mono text-lg text-center">
-                  Recently viewed items<br/>will appear here
-                </p>
-              </DashboardCard>
-  
-              <DashboardCard title="Future Picks" icon={Brain} color={colors.future}>
-                <p className="font-mono text-lg text-center" style={{ color: colors.future }}>
-                  AI-powered<br/>recommendations
-                </p>
-              </DashboardCard>
-  
-              <DashboardCard title="Flux Alerts" icon={Zap} color={colors.flux}>
-                <p className="font-mono text-lg text-center" style={{ color: colors.flux }}>
-                  Price changes<br/>across timelines
-                </p>
-              </DashboardCard>
-  
-              <DashboardCard title="Timeline Analysis" icon={Clock} color={colors.timeline}>
-                <p className="font-mono text-lg text-center" style={{ color: colors.timeline }}>
-                  Your shopping patterns<br/>across time
-                </p>
-              </DashboardCard>
-  
-              <DashboardCard title="Popular Dimensions" icon={Eye} color={colors.popular}>
-                <p className="font-mono text-lg text-center" style={{ color: colors.popular }}>
-                  Most viewed<br/>categories
-                </p>
-              </DashboardCard>
-  
-              <DashboardCard title="Temporal Savings" icon={PiggyBank} color={colors.savings}>
-                <p className="font-mono text-lg text-center" style={{ color: colors.savings }}>
-                  Cross-timeline<br/>deals
-                </p>
-              </DashboardCard>
-            </div>
-          </div>
+        
+        <div style={styles.contentSection}>
+          {children}
         </div>
       </div>
-    );
+    </div>
+  );
+};
+
+const Home = () => {
+  const colors = {
+    temporal: '#2D9CCE',
+    future: '#B50D13',
+    flux: '#D85116',
+    timeline: '#E4801D',
+    popular: '#F0A81A',
+    savings: '#F7DC11'
   };
-  
-  export default Home;
+
+  const styles = {
+    container: {
+      minHeight: '100vh',
+      background: 'linear-gradient(135deg, #1a1a1a, #2D9CCE 140%)',
+      padding: '2rem'
+    },
+    header: {
+      background: 'linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8))',
+      backdropFilter: 'blur(20px)',
+      borderRadius: '20px',
+      padding: '2rem',
+      marginBottom: '2rem',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      boxShadow: '0 8px 32px rgba(0, 0, 0, 0.3)'
+    },
+    headerContent: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center'
+    },
+    title: {
+      fontSize: '3.5rem',
+      fontWeight: '800',
+      background: 'linear-gradient(45deg, #F7DC11, #E4801D)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      letterSpacing: '0.15em',
+      fontFamily: "'Segoe UI', 'Roboto', sans-serif"
+    },
+    subtitle: {
+      color: '#2D9CCE',
+      fontFamily: "'Segoe UI', 'Roboto', sans-serif",
+      fontSize: '1.1rem',
+      letterSpacing: '0.05em'
+    },
+    time: {
+      color: '#2D9CCE',
+      fontFamily: "'Segoe UI', 'Roboto', sans-serif",
+      fontSize: '2.5rem',
+      letterSpacing: '0.1em',
+      fontWeight: '600'
+    },
+    grid: {
+      display: 'grid',
+      gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', // Increased minmax value
+      gap: '2rem',
+      maxWidth: '1400px',
+      margin: '0 auto'
+    }
+  };
+
+  return (
+    <div style={styles.container}>
+      {/* Header */}
+      <div style={styles.header}>
+        <div style={styles.headerContent}>
+          <div>
+            <h1 style={styles.title}>FLUX</h1>
+            <p style={styles.subtitle}>Your Time-Traveling Shopping Assistant</p>
+          </div>
+          <div style={styles.time}>88:88</div>
+        </div>
+      </div>
+
+      {/* Dashboard Grid */}
+      <div style={styles.grid}>
+        <DashboardCard title="Temporal Log" icon={Eye} color={colors.temporal}>
+          <p style={{ color: colors.temporal, fontSize: '1.1rem', lineHeight: '1.6' }}>
+            Recently viewed items<br/>will appear here
+          </p>
+        </DashboardCard>
+
+        <DashboardCard title="Future Picks" icon={Brain} color={colors.future}>
+          <p style={{ color: colors.future, fontSize: '1.1rem', lineHeight: '1.6' }}>
+            AI-powered<br/>recommendations
+          </p>
+        </DashboardCard>
+
+        <DashboardCard title="Flux Alerts" icon={Zap} color={colors.flux}>
+          <p style={{ color: colors.flux, fontSize: '1.1rem', lineHeight: '1.6' }}>
+            Price changes<br/>across timelines
+          </p>
+        </DashboardCard>
+
+        <DashboardCard title="Timeline Analysis" icon={Clock} color={colors.timeline}>
+          <p style={{ color: colors.timeline, fontSize: '1.1rem', lineHeight: '1.6' }}>
+            Your shopping patterns<br/>across time
+          </p>
+        </DashboardCard>
+
+        <DashboardCard title="Popular Dimensions" icon={Eye} color={colors.popular}>
+          <p style={{ color: colors.popular, fontSize: '1.1rem', lineHeight: '1.6' }}>
+            Most viewed<br/>categories
+          </p>
+        </DashboardCard>
+
+        <DashboardCard title="Temporal Savings" icon={PiggyBank} color={colors.savings}>
+          <p style={{ color: colors.savings, fontSize: '1.1rem', lineHeight: '1.6' }}>
+            Cross-timeline<br/>deals
+          </p>
+        </DashboardCard>
+      </div>
+    </div>
+  );
+};
+
+export default Home;

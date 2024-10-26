@@ -51,20 +51,32 @@ module.exports = {Product};
 //register route
 app.post('/register', async (req, res) => {
   const {username, email, password} = req.body;
-  console.log(req.body);
+  console.log("Received data:", req.body);
 
   // Validate input
   if (!email || !password) {
-    return res.status(400).json({ message: 'Email and password are required' });
+      return res.status(400).json({ message: 'Email and password are required' });
   }
 
   try {
-    //const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ username, email, password });
-    const user = await newUser.save();
-    res.json({ message: 'Registration successful', user });
+      const newUser = new User({
+          username: username,
+          email: email,
+          password: password
+      });
+
+      console.log("Attempting to save user:", newUser);
+      
+      const user = await newUser.save();
+      console.log("User saved successfully:", user);
+      
+      res.json({ message: 'Registration successful', user });
   } catch (err) {
-    res.status(400).json({ message: 'Error', error: err });
+      console.error("Error saving user:", err);
+      return res.status(400).json({ 
+          message: 'Error creating user', 
+          error: err.message  // Send the actual error message
+      });
   }
 });
 
@@ -85,9 +97,9 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'User not found' });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
+    //const isMatch = await bcrypt.compare(password, user.password);
 
-    if (!isMatch) {
+    if (password != user.password) {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 

@@ -1,8 +1,93 @@
+
 body {
-  background-image: url('../../public/sunset.jpg');
-  background-size: cover; /*Adjust the background size as needed*/
-  background-repeat: no-repeat;
-  /* background-position: c; */
-  width: 100%;
-  height: 100%;
+  /* Create a deep space-like background with subtle animation */
+  background: 
+    linear-gradient(
+      135deg,
+      #000000 0%,
+      #0a192f 50%,
+      #000000 100%
+    );
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Add animated grid lines */
+body::before {
+  content: '';
+  position: fixed;
+  top: -50%;
+  left: -50%;
+  right: -50%;
+  bottom: -50%;
+  width: 200%;
+  height: 200%;
+  background: 
+    linear-gradient(transparent 0%, rgba(45, 156, 206, 0.1) 100%),
+    linear-gradient(90deg, transparent 0%, rgba(45, 156, 206, 0.1) 100%);
+  background-repeat: repeat;
+  background-size: 50px 50px;
+  animation: grid 20s linear infinite;
+  transform-origin: 50% 50%;
+  pointer-events: none;
+}
+
+/* Add subtle nebula effect */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 30%, rgba(181, 13, 19, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(45, 156, 206, 0.15) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(240, 168, 26, 0.1) 0%, transparent 50%);
+  pointer-events: none;
+}
+
+@keyframes grid {
+  0% {
+    transform: perspective(500px) rotateX(45deg) translateY(0);
+  }
+  100% {
+    transform: perspective(500px) rotateX(45deg) translateY(50px);
+  }
+}
+
+/* Update card styles for better contrast */
+.from-gray-900.to-gray-800 {
+  background: linear-gradient(
+    135deg,
+    rgba(10, 15, 30, 0.8) 0%,
+    rgba(20, 30, 50, 0.8) 100%
+  );
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(45, 156, 206, 0.2);
+}
+
+/* Enhanced glow effects for cards on hover */
+.rounded-lg:hover {
+  box-shadow: 
+    0 0 20px rgba(45, 156, 206, 0.2),
+    0 0 40px rgba(45, 156, 206, 0.1);
+}
+
+/* Cleaner FLUX title styling */
+.text-5xl.font-bold {
+  background: linear-gradient(
+    to bottom,
+    #F7DC11 0%,    /* Metallic Yellow */
+    #E4801D 50%,   /* Princeton Orange */
+    #B50D13 100%   /* Engineering International Orange */
+  );
+  -webkit-background-clip: text;
+  background-clip: text;
+  text-shadow: 
+    0 0 15px rgba(45, 156, 206, 0.5),
+    0 0 30px rgba(45, 156, 206, 0.3);
+  letter-spacing: 2px;
+  transform: perspective(1000px) rotateX(10deg);
 }

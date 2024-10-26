@@ -1,8 +1,9 @@
 import axios from 'axios';
 import { React, useState } from 'react';
 import './styles/login.css';
-
+import { useNavigate } from 'react-router-dom';
 function Login() {
+    const navigate = useNavigate();
   
   // This line must be present on every main page so that session information is circulated properly
   axios.defaults.withCredentials = true;
@@ -22,10 +23,10 @@ function Login() {
               console.log(res);
 
               // Server sends back a boolean success, indicating if login was successful
-              if (res.data.success) {
+              if (res.status === 200) {
                   // Redirect to home page
-                  window.location.href = "/home"
-              }
+                  navigate('/home'); 
+                }
           })
           .catch(err => console.log(err));
   };

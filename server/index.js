@@ -5,6 +5,8 @@ const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 require('dotenv').config();
+const { spawn } = require('child_process');
+
 
 // Initialize express application
 const app = express();
@@ -378,21 +380,106 @@ app.get("/AI_categories_brands_consult", (req, res) => {
   res.json({ text: textData });
 });
 
-app.get("/categories", (req, res) => {
-  const categories = [
-    {
-      title: "Category 1",
-      products: ["Product 1", "Product 2", "Product 3"],
-    },
-    {
-      title: "Category 2",
-      products: ["Product A", "Product B"],
-    },
-  ];
+function extractCategories(pythonOutput) {
+  try {
+    // Log the raw output for debugging
+    console.log('Raw Python output:', pythonOutput);
+    
+    // Find the last line that contains valid JSON
+    const lines = pythonOutput.split('\n');
+    let jsonLine = '';
+    
+    for (let i = lines.length - 1; i >= 0; i--) {
+      const line = lines[i].trim();
+      if (line) {  // Find the last non-empty line
+        try {
+          JSON.parse(line);  // Test if it's valid JSON
+          jsonLine = line;
+          break;
+        } catch (e) {
+          continue;
+        }
+      }
+    }
+    
+    if (!jsonLine) {
+      console.error('No valid JSON found in Python output');
+      return [];
+    }
 
-  res.json(categories);
+    // Parse the JSON data
+    const data = JSON.parse(jsonLine);
+    
+    // Validate the data structure
+    if (!data || !data.category_analysis || !Array.isArray(data.category_analysis.categories)) {
+      console.error('Invalid data format: missing or invalid categories array');
+      return [];
+    }
+
+    // Transform to desired format
+    return data.category_analysis.categories
+      .filter(category => {
+        // Validate each category has required properties
+        return category && 
+               typeof category.category_name === 'string' && 
+               Array.isArray(category.products);
+      })
+      .map(category => ({
+        title: category.category_name,
+        products: category.products
+          .filter(product => product && typeof product.product_name === 'string')
+          .map(product => product.product_name)
+      }))
+      .filter(category => category.products.length > 0);
+
+  } catch (error) {
+    console.error('Error parsing Python output:', error);
+    console.error('Python output received:', pythonOutput);
+    return [];
+  }
+}
+
+// Example usage in Express route
+app.get("/categories", async (req, res) => {
+  try {
+    const pythonProcess = spawn('python', ['../ai_agents.py', 'M. McFly']);
+    
+    let dataString = '';
+    
+    pythonProcess.stdout.on('data', (data) => {
+      dataString += data.toString();
+    });
+
+    pythonProcess.stderr.on('data', (data) => {
+      console.error(`Python stderr: ${data}`);
+    });
+
+    pythonProcess.on('close', (code) => {
+      if (code !== 0) {
+        console.error(`Python process exited with code ${code}`);
+        return res.status(500).json({ error: 'Failed to process categories' });
+      }
+
+      try {
+        const categories = extractCategories(dataString);
+        res.json(categories);
+      } catch (error) {
+        console.error('Error processing categories:', error);
+        res.status(500).json({ 
+          error: 'Failed to process categories',
+          details: error.message
+        });
+      }
+    });
+    
+  } catch (error) {
+    console.error('Error getting categories:', error);
+    res.status(500).json({ 
+      error: 'Failed to get categories',
+      details: error.message 
+    });
+  }
 });
-
 /**
  * Database Connection
  */

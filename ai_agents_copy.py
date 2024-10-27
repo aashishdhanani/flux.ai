@@ -1,5 +1,4 @@
 import os
-import sys
 from langchain_groq import ChatGroq
 from typing import List
 from pydantic import BaseModel, Field
@@ -142,7 +141,7 @@ Ensure that the output JSON strictly adheres to the schema above. Do not include
         
         # Validate the keys
         if not all(k in extracted for k in ("productBrand", "productCategory")):
-            #print(f"Invalid output format for '{product['productName']}': Missing 'productBrand' or 'productCategory'.")
+            print(f"Invalid output format for '{product['productName']}': Missing 'productBrand' or 'productCategory'.")
             extracted['productBrand'] = "Unknown"
             extracted['productCategory'] = "Miscellaneous"
         
@@ -175,12 +174,12 @@ Ensure that the output JSON strictly adheres to the schema above. Do not include
         
         return product
     except json.JSONDecodeError as e:
-        #print(f"JSON parsing error for '{product['productName']}': {e}")
+        print(f"JSON parsing error for '{product['productName']}': {e}")
         product['productBrand'] = "Unknown"
         product['productCategory'] = "Miscellaneous"
         return product
     except Exception as e:
-        #print(f"An error occurred while extracting brand and category for '{product['productName']}': {e}")
+        print(f"An error occurred while extracting brand and category for '{product['productName']}': {e}")
         product['productBrand'] = "Unknown"
         product['productCategory'] = "Miscellaneous"
         return product
@@ -268,7 +267,7 @@ Remember to strictly adhere to the JSON structure specified in the schema.
         response = category_structured_llm.invoke(prompt.strip())
         return response
     except Exception as e:
-        #print(f"An error occurred in category analysis: {e}")
+        print(f"An error occurred in category analysis: {e}")
         return None
 
 def generate_brand_descriptions(products, user_info):
@@ -296,7 +295,7 @@ def generate_brand_descriptions(products, user_info):
         response = brand_structured_llm.invoke(prompt.strip())
         return response  # Structured output handled by with_structured_output
     except Exception as e:
-        # print(f"An error occurred in brand analysis: {e}")
+        print(f"An error occurred in brand analysis: {e}")
         return None
 
 def generate_graph_explanation(graph_title: str, x_variable: str, y_variable: str, data: Dict[Any, Any], user_info) -> GraphExplanation:
@@ -326,7 +325,7 @@ def generate_graph_explanation(graph_title: str, x_variable: str, y_variable: st
         response = llm.with_structured_output(GraphExplanation).invoke(prompt.strip())
         return response  # Structured output handled by with_structured_output
     except Exception as e:
-        # print(f"An error occurred while generating the explanation for '{graph_title}': {e}")
+        print(f"An error occurred while generating the explanation for '{graph_title}': {e}")
         return None
 
 def generate_final_financial_advice(
@@ -385,7 +384,7 @@ Instructions:
         response = final_financial_llm.invoke(prompt.strip())
         return response  # Structured output handled by with_structured_output
     except Exception as e:
-        # print(f"An error occurred while generating the final financial advice: {e}")
+        print(f"An error occurred while generating the final financial advice: {e}")
         return None
 
 
@@ -395,10 +394,10 @@ def generate_financial_advice(username: str):
     try:
         user_info, products = fetch_user_data(username)
     except ValueError as ve:
-        # print(ve)
+        print(ve)
         return
     except Exception as e:
-        # print(f"An error occurred while fetching data for user '{username}': {e}")
+        print(f"An error occurred while fetching data for user '{username}': {e}")
         return
 
     categories = []
@@ -410,18 +409,17 @@ def generate_financial_advice(username: str):
         updated_product = extract_brand_and_category(product, categories, brands)
         updated_products.append(updated_product)
     products = updated_products
-    # print("1")
 
     # Generate category-based descriptions
     category_result = generate_product_category_descriptions(products, user_info)
     while not category_result:
         category_result = generate_product_category_descriptions(products, user_info)
-    # print("2")
+
     # Generate brand-based descriptions
     brand_result = generate_brand_descriptions(products, user_info)
     while not brand_result:
         brand_result = generate_brand_descriptions(products, user_info)
-    # print("3")
+
     # Graph 1: Total Spending by Product Category
     data1 = compute_total_spending_by_category(products)
     explanation1 = generate_graph_explanation(
@@ -431,7 +429,6 @@ def generate_financial_advice(username: str):
         data=data1,
         user_info=user_info
     )
-
     while not explanation1:
         explanation1 = generate_graph_explanation(
             graph_title="Total Spending by Product Category",
@@ -440,7 +437,7 @@ def generate_financial_advice(username: str):
             data=data1,
             user_info=user_info
         )
-    # print("4")
+
     # Graph 2: Total Spending by Brand
     data2 = compute_total_spending_by_brand(products)
     explanation2 = generate_graph_explanation(
@@ -458,7 +455,7 @@ def generate_financial_advice(username: str):
             data=data2,
             user_info=user_info,
         )
-    # print("5")
+
     # Graph 3: Spending Distribution Across E-commerce Sites
     data3 = compute_spending_by_ecommerce_site(products)
     explanation3 = generate_graph_explanation(
@@ -476,7 +473,7 @@ def generate_financial_advice(username: str):
             data=data3,
             user_info=user_info
         )
-    # print("6")
+
     # Graph 4: Average Spending per Purchase
     data4 = compute_average_spending_per_purchase(products)
     explanation4 = generate_graph_explanation(
@@ -494,7 +491,7 @@ def generate_financial_advice(username: str):
             data={"purchase_prices": data4},
             user_info=user_info
         )
-    # print("7")
+
     # Graph 5: Number of Purchases per Product Category
     data5 = compute_number_of_purchases_by_category(products)
     explanation5 = generate_graph_explanation(
@@ -512,7 +509,7 @@ def generate_financial_advice(username: str):
             data=data5,
             user_info=user_info
         )
-    # print("8")
+    
     # Collect all graph explanations
     graph_explanations = [explanation1, explanation2, explanation3, explanation4, explanation5]
 
@@ -520,54 +517,39 @@ def generate_financial_advice(username: str):
     final_advice = generate_final_financial_advice(category_result, brand_result, graph_explanations, user_info)
     while not final_advice:
         final_advice = generate_final_financial_advice(category_result, brand_result, graph_explanations, user_info)
-    # print("9")
-    result = {
-        "category_analysis": category_result.dict() if category_result else None,
-        "brand_analysis": brand_result.dict() if brand_result else None,
-        "graph_explanations": [
-            {
-                "title": explanation.graph_title,
-                "explanation": explanation.explanation
-            } for explanation in graph_explanations if explanation
-        ],
-        "final_advice": final_advice.dict() if final_advice else None,
-        "user_info": user_info
-    }
 
-    return result
 
-    # # Output the results
-    # print("*** Category-Based Analysis ***\n")
-    # if category_result:
-        # print(json.dumps(category_result.dict(), indent=2))
-    # else:
-        # print("Category-Based Analysis not available due to an error.")
+    # Output the results
+    print("*** Category-Based Analysis ***\n")
+    if category_result:
+        print(json.dumps(category_result.dict(), indent=2))
+    else:
+        print("Category-Based Analysis not available due to an error.")
     
-    # print("\n*** Brand-Based Analysis ***\n")
-    # if brand_result:
-        # print(json.dumps(brand_result.dict(), indent=2))
-    # else:
-        # print("Brand-Based Analysis not available due to an error.")
+    print("\n*** Brand-Based Analysis ***\n")
+    if brand_result:
+        print(json.dumps(brand_result.dict(), indent=2))
+    else:
+        print("Brand-Based Analysis not available due to an error.")
 
-    # print("\n*** Graph Explanations ***\n")
-    # for idx, explanation in enumerate(graph_explanations, 1):
-    #     if explanation:
-            # print(f"{idx}. {explanation.graph_title}\n{explanation.explanation}\n")
-    #     else:
-            # print(f"{idx}. Explanation not available due to an error.\n")
+    print("\n*** Graph Explanations ***\n")
+    for idx, explanation in enumerate(graph_explanations, 1):
+        if explanation:
+            print(f"{idx}. {explanation.graph_title}\n{explanation.explanation}\n")
+        else:
+            print(f"{idx}. Explanation not available due to an error.\n")
 
-    # print("*** Final Financial Advice ***\n")
-    # if final_advice:
-        # print(json.dumps(final_advice.dict(), indent=2))
-    # else:
-        # print("Final Financial Advice not available due to an error.")
+    print("*** Final Financial Advice ***\n")
+    if final_advice:
+        print(json.dumps(final_advice.dict(), indent=2))
+    else:
+        print("Final Financial Advice not available due to an error.")
 
-    # print("\nThank you for using our financial advisory service.")
+    print("\nThank you for using our financial advisory service.")
 
 if __name__ == "__main__":
-    username_to_query = sys.argv[1] if len(sys.argv) > 1 else "M. McFly"
-    result = generate_financial_advice(username_to_query)
-    print(json.dumps(result))
+       username_to_query = "M. McFly"  # Replace with the desired username
+       generate_financial_advice(username_to_query)
 
 """
 def generate_graphs_and_explanations():

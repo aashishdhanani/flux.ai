@@ -1,18 +1,41 @@
+/* Body styling */
 body {
     background: linear-gradient(to right, #1a1a1a, #333333);
     color: #ffffff;
     font-family: 'Press Start 2P', sans-serif;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+}
+
+/* Container styling for wider layout and top alignment */
+.container {
+    max-width: 800px; /* Adjust width as needed */
+    width: 100%;
     padding: 20px;
+    box-sizing: border-box;
+    text-align: center; /* Center-aligns text */
 }
 
 /* Neon Text Effect */
-h1, h2, .neon-text {
+h1.neon-text {
     color: #00ccff;
     text-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff, 0 0 30px #ff66cc;
+    white-space: nowrap; /* Prevent wrapping */
+    margin: 0 auto 20px; /* Centers h1 and adds bottom spacing */
 }
 
-/* Buttons */
+/* Wrapper for button and card */
+.button-card-wrapper {
+    display: flex;
+    flex-direction: column; /* Stacks elements vertically */
+    align-items: center;
+    gap: 20px; /* Adds space between button and card */
+}
+
+/* Button styling */
 button {
     background-color: #ff6600;
     border: none;
@@ -20,36 +43,28 @@ button {
     color: #ffffff;
     font-size: 1em;
     cursor: pointer;
-    margin: 5px;
     box-shadow: 0 0 10px #ff6600, 0 0 20px #ff6600;
     transition: transform 0.2s ease-in-out;
+    width: 100%; /* Makes the button full-width within the container */
+    max-width: 300px; /* Optional: limits button width */
 }
 
 button:hover {
-    transform: scale(1.1);
+    transform: scale(1.05);
     box-shadow: 0 0 20px #ff6600, 0 0 30px #ff66cc;
 }
 
-/* Inputs */
-input {
-    background: #333333;
-    color: #66ff66;
-    border: 2px solid #00ccff;
-    padding: 5px;
-    font-family: 'Press Start 2P', sans-serif;
-    outline: none;
-}
-
-/* Card Container */
+/* Card styling */
 .card {
     background: #1a1a1a;
     border: 2px solid #00ccff;
     padding: 20px;
-    margin: 10px;
     box-shadow: 0 0 20px #ff66cc, 0 0 30px #ff6600;
+    width: 100%; /* Makes the card full-width within the container */
+    max-width: 300px; /* Optional: limits card width */
 }
 
-/* Additional Hover Effect */
+/* Card hover effect */
 .card:hover {
     box-shadow: 0 0 30px #ff66cc, 0 0 40px #ff6600;
 }

@@ -4,7 +4,9 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet');
+require('dotenv').config()
 
+console.log(process.env.PORT)
 // Initialize express application
 const app = express();
 
@@ -12,8 +14,8 @@ const app = express();
  * Server Configuration Constants
  */
 const CONFIG = {
-  PORT: process.env.PORT || 3000,
-  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/fluxai',
+  PORT: process.env.PORT,
+  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce_tracker',
   RATE_LIMIT_WINDOW: 15 * 60 * 1000, // 15 minutes
   RATE_LIMIT_MAX: 100 // Maximum 100 requests per window
 };

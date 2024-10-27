@@ -6,14 +6,12 @@
     "permissions": [
       "activeTab",
       "storage",
-      "tabs"
+      "tabs",
+      "scripting"
     ],
     "host_permissions": [
       "http://localhost:3000/*"
     ],
-    "background": {
-      "service_worker": "background.js"
-    },
     "action": {
         "default_popup": "popup.html",
         "default_icon": "icons/icon.png"
@@ -24,7 +22,8 @@
         "*://*.ebay.com/*",
         "*://*.walmart.com/*",
         "*://*.bestbuy.com/*",
-        "*://*.target.com/*"
+        "*://*.target.com/*",
+        "*://*.nike.com/*"
       ],
       "js": ["content.js"]
     }]

@@ -7,7 +7,7 @@ import Login from './login';
 import Home from './home';  // Create this file
 import reportWebVitals from './reportWebVitals';
 
-import Recommendations from './recpages/recommendations';
+import Categories from './recpages/categories';
 import Patterns from './recpages/patterns';
 import MostViewed from './recpages/mostviewed';
 
@@ -18,7 +18,7 @@ root.render(
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
-        <Route path="/recommendations" element={<Recommendations />} />
+        <Route path="/categories" element={<Categories />} />
         <Route path="/mostviewed" element={<MostViewed />} />
         <Route path="/patterns" element={<Patterns />} />
         <Route path="/" element={<Navigate to="/login" />} />

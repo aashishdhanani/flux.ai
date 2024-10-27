@@ -1,13 +1,11 @@
 import React, { useState } from 'react';
 import { Clock, Zap, Eye, Brain, PiggyBank } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
 import TransitionOverlay from './transistionOverlay';
 
 const DashboardCard = ({ title, icon: Icon, children, color, to }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [showTransition, setShowTransition] = useState(false);
 
-  const navigate = useNavigate();
 
 
   const styles = {
@@ -194,9 +192,9 @@ const Home = () => {
 
       {/* Dashboard Grid */}
       <div style={styles.grid}>
-        <DashboardCard title="Future Picks" icon={Brain} color={colors.future} to="/recommendations">
+        <DashboardCard title="Browsing Habits" icon={Brain} color={colors.future} to="/categories">
           <p style={{ color: colors.future, fontSize: '1.1rem', lineHeight: '1.6' }}>
-            AI-powered<br/>recommendations
+            Categories of the products<br/>you have been searching for
           </p>
         </DashboardCard>
 

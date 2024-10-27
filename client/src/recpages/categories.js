@@ -27,14 +27,15 @@ const CategoryCard = ({ title, products, color }) => {
     },
     cardContent: {
       height: '100%',
-      display: 'flex',
-      flexDirection: 'column',
+      // display: 'flex',
+      // flexDirection: 'column',
       position: 'relative',
       zIndex: 2
     },
     headerSection: {
-      display: 'flex',
-      alignItems: 'center',
+      // display: 'flex',
+      // alignItems: 'left',
+      // justifyContent: "flex-start",
       gap: '1rem',
       marginBottom: '1.5rem'
     },
@@ -129,6 +130,7 @@ const CategoryCard = ({ title, products, color }) => {
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
 
   useEffect(() => {
     const fetchCategories = async () => {
@@ -141,6 +143,19 @@ const Categories = () => {
     };
 
     fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchBrands = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/brands");
+        setBrands(response.data); 
+      } catch (error) {
+        console.error("Error fetching brands:", error);
+      }
+    };
+
+    fetchBrands();
   }, []);
 
     const styles = {
@@ -201,12 +216,14 @@ const Categories = () => {
             </div>
             <h2 style= {styles.brands}>Brands/Vendors</h2>
             <div style = {{marginTop: "20px", display: 'flex', flexWrap: 'wrap'}}>
-              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
-              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
-              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
-              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
-              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
-              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
+            {brands.map((brand, index) => (
+                <CategoryCard
+                  key={index}
+                  title={brand.title} //change if needed
+                  products={brand.products}
+                  color="orange"
+                />
+              ))}
             </div>
       
         </div>

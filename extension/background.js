@@ -72,7 +72,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         chrome.storage.local.set({ authToken: token }, () => {
             console.log('Token saved to storage');
             // Send response back to content script
-            sendResponse({ status: 'success', message: 'Token stored' });
+            sendResponse({ status: 'success', message: authToken });
         });
         
         // Important: return true to indicate we'll respond asynchronously

@@ -30,7 +30,7 @@ const Login = () => {
             window.postMessage(
                 { 
                     type: "FROM_PAGE", 
-                    token: "placeholder",
+                    token: res.data.username,
                     source: "loginComponent" // helps with debugging
                 }, 
                 "http://localhost:3006" // Be specific with target origin

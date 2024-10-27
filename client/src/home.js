@@ -1,8 +1,14 @@
 import React, { useState } from 'react';
 import { Clock, Zap, Eye, Brain, PiggyBank } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import TransitionOverlay from './transistionOverlay';
 
-const DashboardCard = ({ title, icon: Icon, children, color }) => {
+const DashboardCard = ({ title, icon: Icon, children, color, to }) => {
   const [isHovered, setIsHovered] = useState(false);
+  const [showTransition, setShowTransition] = useState(false);
+
+  const navigate = useNavigate();
+
 
   const styles = {
     card: {
@@ -14,7 +20,8 @@ const DashboardCard = ({ title, icon: Icon, children, color }) => {
       backdropFilter: 'blur(20px)',
       border: '1px solid rgba(255, 255, 255, 0.1)',
       transition: 'transform 0.3s ease, box-shadow 0.3s ease',
-      overflow: 'hidden'
+      overflow: 'hidden',
+      cursor: isHovered ? 'pointer' : 'default',
     },
     cardContent: {
       height: '100%',
@@ -63,40 +70,59 @@ const DashboardCard = ({ title, icon: Icon, children, color }) => {
     setIsHovered(hover);
   };
 
+  const handleClick = () => {
+    if (to) {
+      setShowTransition(true);
+    }
+  };
+
+  const handleTransitionComplete = () => {
+    setShowTransition(false);
+  };
+
   return (
-    <div
-      style={{
-        ...styles.card,
-        transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
-        boxShadow: isHovered 
-          ? `0 10px 30px rgba(0, 0, 0, 0.5), 0 0 30px ${color}30` 
-          : '0 8px 32px rgba(0, 0, 0, 0.3)'
-      }}
-      onMouseEnter={() => handleHover(true)}
-      onMouseLeave={() => handleHover(false)}
-    >
-      <div style={styles.glowBorder}>
-        <div style={styles.innerBackground} />
-      </div>
-      
-      <div style={styles.cardContent}>
-        <div style={styles.headerSection}>
-          <Icon
-            size={32}
-            style={{
-              color: color,
-              transform: isHovered ? 'scale(1.1)' : 'scale(1)',
-              transition: 'transform 0.3s ease'
-            }}
-          />
-          <h2 style={{ ...styles.title, color: color }}>{title}</h2>
+    <>
+      <TransitionOverlay 
+        show={showTransition}
+        to={to}
+        color={color}
+        onAnimationComplete={handleTransitionComplete}
+      />
+      <div
+        onClick={handleClick}
+        style={{
+          ...styles.card,
+          transform: isHovered ? 'translateY(-5px)' : 'translateY(0)',
+          boxShadow: isHovered 
+            ? `0 10px 30px rgba(0, 0, 0, 0.5), 0 0 30px ${color}30` 
+            : '0 8px 32px rgba(0, 0, 0, 0.3)'
+        }}
+        onMouseEnter={() => handleHover(true)}
+        onMouseLeave={() => handleHover(false)}
+      >
+        <div style={styles.glowBorder}>
+          <div style={styles.innerBackground} />
         </div>
         
-        <div style={styles.contentSection}>
-          {children}
+        <div style={styles.cardContent}>
+          <div style={styles.headerSection}>
+            <Icon
+              size={32}
+              style={{
+                color: color,
+                transform: isHovered ? 'scale(1.1)' : 'scale(1)',
+                transition: 'transform 0.3s ease'
+              }}
+            />
+            <h2 style={{ ...styles.title, color: color }}>{title}</h2>
+          </div>
+          
+          <div style={styles.contentSection}>
+            {children}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
@@ -145,13 +171,6 @@ const Home = () => {
       fontSize: '1.1rem',
       letterSpacing: '0.05em'
     },
-    time: {
-      color: '#2D9CCE',
-      fontFamily: "'Segoe UI', 'Roboto', sans-serif",
-      fontSize: '2.5rem',
-      letterSpacing: '0.1em',
-      fontWeight: '600'
-    },
     grid: {
       display: 'grid',
       gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', // Increased minmax value
@@ -168,47 +187,29 @@ const Home = () => {
         <div style={styles.headerContent}>
           <div>
             <h1 style={styles.title}>FLUX</h1>
-            <p style={styles.subtitle}>Your Time-Traveling Shopping Assistant</p>
+            <p style={{color: 'white', fontSize: '25px'}}>"Shopping at 88mph"</p>
+            <button>Logout</button>
           </div>
-          <div style={styles.time}>88:88</div>
         </div>
       </div>
 
       {/* Dashboard Grid */}
       <div style={styles.grid}>
-        <DashboardCard title="Temporal Log" icon={Eye} color={colors.temporal}>
-          <p style={{ color: colors.temporal, fontSize: '1.1rem', lineHeight: '1.6' }}>
-            Recently viewed items<br/>will appear here
-          </p>
-        </DashboardCard>
-
-        <DashboardCard title="Future Picks" icon={Brain} color={colors.future}>
+        <DashboardCard title="Future Picks" icon={Brain} color={colors.future} to="/recommendations">
           <p style={{ color: colors.future, fontSize: '1.1rem', lineHeight: '1.6' }}>
             AI-powered<br/>recommendations
           </p>
         </DashboardCard>
 
-        <DashboardCard title="Flux Alerts" icon={Zap} color={colors.flux}>
-          <p style={{ color: colors.flux, fontSize: '1.1rem', lineHeight: '1.6' }}>
-            Price changes<br/>across timelines
-          </p>
-        </DashboardCard>
-
-        <DashboardCard title="Timeline Analysis" icon={Clock} color={colors.timeline}>
+        <DashboardCard title="Timeline Analysis" icon={Clock} color={colors.timeline} to='/mostviewed'>
           <p style={{ color: colors.timeline, fontSize: '1.1rem', lineHeight: '1.6' }}>
             Your shopping patterns<br/>across time
           </p>
         </DashboardCard>
 
-        <DashboardCard title="Popular Dimensions" icon={Eye} color={colors.popular}>
+        <DashboardCard title="Popular Dimensions" icon={Eye} color={colors.popular} to='/patterns'>
           <p style={{ color: colors.popular, fontSize: '1.1rem', lineHeight: '1.6' }}>
             Most viewed<br/>categories
-          </p>
-        </DashboardCard>
-
-        <DashboardCard title="Temporal Savings" icon={PiggyBank} color={colors.savings}>
-          <p style={{ color: colors.savings, fontSize: '1.1rem', lineHeight: '1.6' }}>
-            Cross-timeline<br/>deals
           </p>
         </DashboardCard>
       </div>

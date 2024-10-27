@@ -14,12 +14,14 @@
     npm install
     cd client
     npm install
-
+```
 3. Start 
-    ```mongod --dbpath data/db
+``` 
+    mongod --dbpath data/db
     npm start
     cd client
     npm start
+```
 
 
 ## Inspiration

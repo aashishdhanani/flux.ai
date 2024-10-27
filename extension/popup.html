@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,8 +7,19 @@
     <link rel="stylesheet" href="popup.css">
 </head>
 <body>
-    <h1 class="neon-text">Back to the Future</h1>
-    <button>Get Started</button>
-    <div class="card">Welcome to the Future!</div>
+    <div class="container">
+        <h1 class="neon-text">Back to the Future</h1>
+        <div class="button-card-wrapper">
+            <a href="http://localhost:3006" target="_blank">
+                <button id="finance-button" >Finance at 88 mph</button>
+            </a>
+            <div class="card">Welcome to the Future!</div>
+        </div>
+    </div>
 </body>
+<script>
+    document.getElementById('finance-button').addEventListener('click', function() {
+        window.location.href = 'https://localhost:3006'; // Replace with your desired URL
+    });
+</script>
 </html>

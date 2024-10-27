@@ -18,17 +18,34 @@ const Login = () => {
     passwordConfirm: ''
   });
 
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
-    axios.post('http://localhost:3000/login', loginValues)
-      .then(res => {
-        alert(res.data.message);
+    try {
+        const res = await axios.post('http://localhost:3000/login', loginValues);
         if (res.status === 200) {
-          navigate('/home');
+            // Debug log before sending message
+            console.log("Sending post message to extension");
+            
+            // Send message with more specific targeting
+            window.postMessage(
+                { 
+                    type: "FROM_PAGE", 
+                    token: res.data.username,
+                    source: "loginComponent" // helps with debugging
+                }, 
+                "http://localhost:3006" // Be specific with target origin
+            );
+            
+            // Debug log after sending
+            console.log("Post message sent");
+            
+            navigate('/home');
         }
-      })
-      .catch(err => console.log(err));
-  };
+        alert(res.data.message);
+    } catch (err) {
+        console.error("Login error:", err);
+    }
+};
 
   const handleAccountSubmit = async (e) => {
     e.preventDefault();

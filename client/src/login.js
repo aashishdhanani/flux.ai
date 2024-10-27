@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import './styles/login.css';
 import axios from 'axios';
 
 const Login = () => {
@@ -56,7 +57,7 @@ const Login = () => {
     container: {
       minHeight: '100vh',
       padding: '2rem',
-      background: 'linear-gradient(135deg, #1a1a1a, #2D9CCE 140%)',
+      background: 'linear-gradient(to bottom, #22133a, #540053, #8c0389, #600158)',
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',

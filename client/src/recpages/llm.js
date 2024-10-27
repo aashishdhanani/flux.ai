@@ -27,7 +27,7 @@ const Sidebar = () => {
         textRef.current += text[indexRef.current];
         setDisplayedText(textRef.current); // Update the displayed text
         indexRef.current += 1; // Move to the next character
-        setTimeout(typeCharacter, 50); // Adjust typing speed here
+        setTimeout(typeCharacter, 35); // Adjust typing speed here
       }
     };
 

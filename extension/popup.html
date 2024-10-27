@@ -10,9 +10,16 @@
     <div class="container">
         <h1 class="neon-text">Back to the Future</h1>
         <div class="button-card-wrapper">
-            <button>Finance at 88 mph</button>
+            <a href="http://localhost:3006" target="_blank">
+                <button id="finance-button" >Finance at 88 mph</button>
+            </a>
             <div class="card">Welcome to the Future!</div>
         </div>
     </div>
 </body>
+<script>
+    document.getElementById('finance-button').addEventListener('click', function() {
+        window.location.href = 'https://localhost:3006'; // Replace with your desired URL
+    });
+</script>
 </html>

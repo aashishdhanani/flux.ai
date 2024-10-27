@@ -333,3 +333,18 @@ app.get("/categories", (req, res) => {
 
   res.json(categories);
 });
+
+app.get("/brands", (req, res) => {
+  const brands = [
+    {
+      title: "Brand 1",
+      products: ["Product 1", "Product 2", "Product 3"],
+    },
+    {
+      title: "Brand 2",
+      products: ["Product A", "Product B"],
+    },
+  ];
+
+  res.json(brands);
+});

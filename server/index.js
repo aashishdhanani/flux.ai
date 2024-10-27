@@ -13,7 +13,7 @@ const app = express();
  */
 const CONFIG = {
   PORT: process.env.PORT || 3000,
-  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce_tracker',
+  MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/fluxai',
   RATE_LIMIT_WINDOW: 15 * 60 * 1000, // 15 minutes
   RATE_LIMIT_MAX: 100 // Maximum 100 requests per window
 };
@@ -39,7 +39,8 @@ const corsOptions = {
     }
   },
   methods: ['POST', 'GET'],
-  allowedHeaders: ['Content-Type', 'X-Extension-ID', 'X-Tab-ID', 'X-Session-ID']
+  allowedHeaders: ['Content-Type', 'X-Extension-ID', 'X-Tab-ID', 'X-Session-ID'],
+  credentials: true
 };
 app.use(cors(corsOptions));
 

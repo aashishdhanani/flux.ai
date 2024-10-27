@@ -63,11 +63,6 @@ const ProductEventSchema = new mongoose.Schema({
     required: true,
     index: true 
   },
-  eventType: {
-    type: String,
-    enum: ['VIEW', 'EXIT'],
-    required: true
-  },
   timestamp: {
     type: Date,
     default: Date.now
@@ -83,43 +78,23 @@ const ProductEventSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  productDetails: {
-    title: String,
-    price: String,
-    originalPrice: String,
-    currency: String,
-    availability: String,
-    category: String,
-    brand: String,
-    rating: Number,
-    reviewCount: Number
+  productTitle: {
+    type: String,
+    required: true
   },
 
-  // User interaction metrics
-  userMetrics: {
-    timeSpentSeconds: Number,
-    scrollDepthPercent: Number,
-    clickCount: Number,
-    addToCartAttempt: Boolean
-  },
-
-  // Technical metadata
-  metadata: {
-    extensionId: String,
-    extensionVersion: String,
-    tabId: String,
-    userAgent: String,
-    screenResolution: String,
-    deviceType: String
+  price: {
+    type: Number,
+    required: true
   }
 }, {
   timestamps: true
 });
 
 // Create indexes for common queries
-ProductEventSchema.index({ platform: 1, 'productDetails.category': 1 });
+/* ProductEventSchema.index({ platform: 1, 'productDetails.category': 1 });
 ProductEventSchema.index({ timestamp: -1 });
-ProductEventSchema.index({ sessionId: 1, timestamp: -1 });
+ProductEventSchema.index({ sessionId: 1, timestamp: -1 }); */
 
 // Create MongoDB model
 const ProductEvent = mongoose.model('ProductEvent', ProductEventSchema);
@@ -130,12 +105,12 @@ const ProductEvent = mongoose.model('ProductEvent', ProductEventSchema);
 
 // Validate request payload
 const validateEventPayload = (req, res, next) => {
-  const { sessionId, platform, productUrl, productDetails } = req.body;
+  const { sessionId, platform, productUrl, productTitle } = req.body;
   
-  if (!sessionId || !platform || !productUrl || !productDetails) {
+  if (!sessionId || !platform || !productUrl || !productTitle) {
     return res.status(400).json({
       error: 'Missing required fields',
-      requiredFields: ['sessionId', 'platform', 'productUrl', 'productDetails']
+      requiredFields: ['sessionId', 'platform', 'productUrl', 'productDetails', 'productTitle']
     });
   }
   next();
@@ -143,15 +118,9 @@ const validateEventPayload = (req, res, next) => {
 
 // Record product view/exit events
 app.post('/api/events', validateEventPayload, async (req, res) => {
-  console.log("events")
   try {
     const eventData = new ProductEvent({
-      ...req.body,
-      metadata: {
-        ...req.body.metadata,
-        extensionId: req.headers['x-extension-id'],
-        tabId: req.headers['x-tab-id']
-      }
+      ...req.body
     });
 
     await eventData.save();

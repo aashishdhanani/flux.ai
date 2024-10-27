@@ -1,7 +1,7 @@
 class ProductAnalyticsService {
     constructor() {
       this.API_BASE_URL = 'http://localhost:3000/api';
-      this.MAX_RETRIES = 3;
+      this.MAX_RETRIES = 1;
       this.RETRY_DELAY = 1000;
       this.initializeMessageListener();
     }

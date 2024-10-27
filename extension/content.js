@@ -86,16 +86,14 @@ class ProductTracker {
       };
   
       return {
+        sessionId: this.generateSessionId(),
         platform: this.currentPlatform,
         productUrl: window.location.href,
-        productDetails: getTextContent(platformSelectors.title),
+        productTitle: getTextContent(platformSelectors.title),
         price: getTextContent(platformSelectors.price),
-        rating: getTextContent(platformSelectors.rating),
-        reviews: getTextContent(platformSelectors.reviews),
-        availability: getTextContent(platformSelectors.availability),
-        category: getTextContent(platformSelectors.category),
-        timestamp: new Date().toISOString(),
-        sessionId: this.generateSessionId()
+        productCategory: getTextContent(platformSelectors.category),
+        timespent: 1,
+        timestamp: new Date().toISOString()
       };
     }
   
@@ -141,7 +139,7 @@ class ProductTracker {
         type: 'PRODUCT_VIEW',
         data: {
           ...productInfo,
-          event: 'page_view'
+          eventType: 'VIEW'
         }
       });
       console.log('message sent')

@@ -376,7 +376,7 @@ app.post('/login', async (req, res) => {
 
 // AI category analysis endpoints
 app.get("/AI_categories_brands_consult", (req, res) => {
-  const textData = "This is the text from the backend that will appear gradually.";
+  const textData = "The customer has a tendency to splurge on luxury items, often spending $130 or more on a single purchase. This habit may be related to their financial goal of getting better at investing, as they may be looking to diversify their assets with unique and exclusive items. The customer's monthly budget of $1000 provides some flexibility to make adjustments and prioritize their spending. It may be helpful to set aside a portion of their budget for long-term investments, such as a retirement account or a diversified portfolio. recommendations: [Reduce spending on luxury items and allocate funds towards more strategic investments].";
   res.json({ text: textData });
 });
 
@@ -439,47 +439,94 @@ function extractCategories(pythonOutput) {
   }
 }
 
-// Example usage in Express route
 app.get("/categories", async (req, res) => {
   try {
-    const pythonProcess = spawn('python', ['../ai_agents.py', 'M. McFly']);
-    
-    let dataString = '';
-    
-    pythonProcess.stdout.on('data', (data) => {
-      dataString += data.toString();
-    });
+    // Sample data (in production, this would come from your database)
+    const data = {
+      "categories": [
+        {
+          "category_name": "Electronics",
+          "products": [
+            {
+              "product_name": "Hercules DJControl Inpulse 200 MK2 — Ideal DJ Controller for Learning to Mix — Software and Tutorials Included, Black",
+              "description": "The customer has shown interest in music production and DJing, trying to save money and invest in their hobby. They have a moderate budget for electronics and tend to shop on Amazon."
+            },
+            {
+              "product_name": "Nespresso VertuoPlus Coffee Maker and Espresso Machine by DeLonghi Black Matte",
+              "description": "The customer enjoys coffee and has a high willingness to spend on quality products. They have already spent money on this product and tend to shop on multiple platforms, including Target."
+            }
+          ]
+        },
+        {
+          "category_name": "Miscellaneous",
+          "products": [
+            {
+              "product_name": "Casio GA-B2100-2AJF [G-Shock GA-B2100 Series Men's Rubber Band] Watch Shipped from Japan Released in Apr 2022",
+              "description": "The customer has shown interest in fashion and accessories, trying to save money on high-quality products. They have a moderate budget for miscellaneous items and tend to shop on multiple platforms, including Amazon."
+            },
+            {
+              "product_name": "NIKE AIR JORDAN 1 RETRO WHAT THE HORNETS PROMO SAMPLE PE PLAYER EXCLUSIVE US 13",
+              "description": "The customer is interested in sneakers and has a high willingness to spend on exclusive products. They have already spent money on this product and tend to shop on multiple platforms, including eBay."
+            }
+          ]
+        }
+      ]
+    };
 
-    pythonProcess.stderr.on('data', (data) => {
-      console.error(`Python stderr: ${data}`);
-    });
+    // Transform the data into the required format
+    const transformedData = data.categories.map(category => ({
+      title: category.category_name,
+      products: category.products.map(product => product.product_name)
+    }));
 
-    pythonProcess.on('close', (code) => {
-      if (code !== 0) {
-        console.error(`Python process exited with code ${code}`);
-        return res.status(500).json({ error: 'Failed to process categories' });
-      }
-
-      try {
-        const categories = extractCategories(dataString);
-        res.json(categories);
-      } catch (error) {
-        console.error('Error processing categories:', error);
-        res.status(500).json({ 
-          error: 'Failed to process categories',
-          details: error.message
-        });
-      }
-    });
-    
+    res.json(transformedData);
   } catch (error) {
-    console.error('Error getting categories:', error);
-    res.status(500).json({ 
-      error: 'Failed to get categories',
-      details: error.message 
-    });
+    console.error('Error processing categories:', error);
+    res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+// Example usage in Express route
+// app.get("/categories", async (req, res) => {
+//   try {
+//     const pythonProcess = spawn('python', ['../ai_agents.py', 'M. McFly']);
+    
+//     let dataString = '';
+    
+//     pythonProcess.stdout.on('data', (data) => {
+//       dataString += data.toString();
+//     });
+
+//     pythonProcess.stderr.on('data', (data) => {
+//       console.error(`Python stderr: ${data}`);
+//     });
+
+//     pythonProcess.on('close', (code) => {
+//       if (code !== 0) {
+//         console.error(`Python process exited with code ${code}`);
+//         return res.status(500).json({ error: 'Failed to process categories' });
+//       }
+
+//       try {
+//         const categories = extractCategories(dataString);
+//         res.json(categories);
+//       } catch (error) {
+//         console.error('Error processing categories:', error);
+//         res.status(500).json({ 
+//           error: 'Failed to process categories',
+//           details: error.message
+//         });
+//       }
+//     });
+    
+//   } catch (error) {
+//     console.error('Error getting categories:', error);
+//     res.status(500).json({ 
+//       error: 'Failed to get categories',
+//       details: error.message 
+//     });
+//   }
+// });
 /**
  * Database Connection
  */

@@ -20,7 +20,7 @@ const Login = () => {
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    axios.post('http://localhost:5001/login', loginValues)
+    axios.post('http://localhost:3000/login', loginValues)
       .then(res => {
         alert(res.data.message);
         if (res.status === 200) {
@@ -33,7 +33,7 @@ const Login = () => {
   const handleAccountSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('http://localhost:5001/register', {
+      const response = await axios.post('http://localhost:3000/register', {
         username: accountValues.username,
         email: accountValues.email,
         password: accountValues.password

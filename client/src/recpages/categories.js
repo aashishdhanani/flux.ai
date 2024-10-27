@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Sidebar from './llm.js';
 
 
 const orange = "#E4801D"
@@ -142,9 +143,7 @@ const Categories = () => {
           textAlign: 'center',
           fontSize: '3.5rem',
           fontWeight: '800',
-          background: yellow,
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
+          color: yellow,
           letterSpacing: '0.15em',
           fontFamily: "'Segoe UI', 'Roboto', sans-serif"
         },
@@ -153,9 +152,7 @@ const Categories = () => {
           textAlign: 'center',
           fontSize: '3.5rem',
           fontWeight: '800',
-          background: orange,
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
+          color: orange,
           letterSpacing: '0.15em',
           fontFamily: "'Segoe UI', 'Roboto', sans-serif"
         },
@@ -168,6 +165,7 @@ const Categories = () => {
       };
     
     return (
+      <>
         <div style={styles.container}>
             <h2 style={styles.title}>Browsing Habits</h2>
             <h2 style= {styles.category}>Categories</h2>
@@ -190,6 +188,8 @@ const Categories = () => {
             </div>
       
         </div>
+        <Sidebar></Sidebar>
+      </>
     )
 }
 

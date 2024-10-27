@@ -248,13 +248,15 @@ const userSchema = new mongoose.Schema({
   username: {type: String, required: true, unique: true},
   email: { type: String, required: true},
   password: { type: String, required: true },
+  goals: {type: [String], required: true},
+  budget: {type: Number, required: true}
 });
 const User = mongoose.model('User', userSchema);
 module.exports = { User };
 
 //register route
 app.post('/register', async (req, res) => {
-  const {username, email, password} = req.body;
+  const {username, email, password, goals, budget} = req.body;
   console.log("Received data:", req.body);
 
   // Validate input
@@ -266,7 +268,9 @@ app.post('/register', async (req, res) => {
       const newUser = new User({
           username: username,
           email: email,
-          password: password
+          password: password,
+          goals: goals,
+          budget: budget
       });
 
       console.log("Attempting to save user:", newUser);

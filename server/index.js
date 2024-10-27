@@ -14,7 +14,7 @@ const app = express();
  * Server Configuration Constants
  */
 const CONFIG = {
-  PORT: process.env.PORT,
+  PORT: process.env.PORT || 3000,
   MONGODB_URI: process.env.MONGODB_URI || 'mongodb://localhost:27017/ecommerce_tracker',
   RATE_LIMIT_WINDOW: 15 * 60 * 1000, // 15 minutes
   RATE_LIMIT_MAX: 100 // Maximum 100 requests per window
@@ -306,7 +306,7 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
-    res.json({ message: 'Login successful', user });
+    res.json({ message: 'Login successful', username });
   } catch (err) {
     res.status(400).json({ message: 'Error', error: err });
   }

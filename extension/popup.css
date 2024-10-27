@@ -1,0 +1,55 @@
+body {
+    background: linear-gradient(to right, #1a1a1a, #333333);
+    color: #ffffff;
+    font-family: 'Press Start 2P', sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+/* Neon Text Effect */
+h1, h2, .neon-text {
+    color: #00ccff;
+    text-shadow: 0 0 10px #00ccff, 0 0 20px #00ccff, 0 0 30px #ff66cc;
+}
+
+/* Buttons */
+button {
+    background-color: #ff6600;
+    border: none;
+    padding: 10px 20px;
+    color: #ffffff;
+    font-size: 1em;
+    cursor: pointer;
+    margin: 5px;
+    box-shadow: 0 0 10px #ff6600, 0 0 20px #ff6600;
+    transition: transform 0.2s ease-in-out;
+}
+
+button:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 20px #ff6600, 0 0 30px #ff66cc;
+}
+
+/* Inputs */
+input {
+    background: #333333;
+    color: #66ff66;
+    border: 2px solid #00ccff;
+    padding: 5px;
+    font-family: 'Press Start 2P', sans-serif;
+    outline: none;
+}
+
+/* Card Container */
+.card {
+    background: #1a1a1a;
+    border: 2px solid #00ccff;
+    padding: 20px;
+    margin: 10px;
+    box-shadow: 0 0 20px #ff66cc, 0 0 30px #ff6600;
+}
+
+/* Additional Hover Effect */
+.card:hover {
+    box-shadow: 0 0 30px #ff66cc, 0 0 40px #ff6600;
+}

@@ -1,7 +1,5 @@
-// content.js
 class ProductTracker {
   constructor() {
-    // Store selectors for different e-commerce platforms
     this.selectors = {
       amazon: {
         title: '#productTitle',
@@ -48,10 +46,30 @@ class ProductTracker {
     this.sessionStartTime = new Date();
     this.pageLoadTime = new Date();
     this.currentPlatform = this.detectPlatform();
-    this.initialize();
+    this.checkLoginAndInitialize();
   }
 
-  // Detect which e-commerce platform we're on
+  async checkLoginAndInitialize() {
+    chrome.storage.local.get(['username', 'authToken'], (result) => {
+      if (!result.username) {
+        console.log('User not logged in - tracking disabled');
+        this.showLoginPrompt();
+        return;
+      }
+      this.username = result.username;
+      this.initialize();
+    });
+  }
+
+  showLoginPrompt() {
+    chrome.runtime.sendMessage({
+      type: 'SHOW_LOGIN_PROMPT',
+      data: {
+        message: 'Please log in to track your shopping activity'
+      }
+    });
+  }
+
   detectPlatform() {
     const hostname = window.location.hostname;
     if (hostname.includes('amazon')) return 'amazon';
@@ -62,7 +80,6 @@ class ProductTracker {
     return null;
   }
 
-  // Check if current page is a product page
   isProductPage() {
     const url = window.location.href;
     const patterns = {
@@ -73,41 +90,41 @@ class ProductTracker {
       target: /\/p\//
     };
 
-    return this.currentPlatform && patterns[this.currentPlatform].test(url)  && checkLoginState;
+    return this.currentPlatform && patterns[this.currentPlatform].test(url);
   }
 
-  // Extract product information using platform-specific selectors
   getProductInfo() {
-    if (!this.currentPlatform) return null;
+    if (!this.currentPlatform || !this.username) return null;
+    
     const platformSelectors = this.selectors[this.currentPlatform];
     const getTextContent = (selector) => {
       const element = document.querySelector(selector);
       return element ? element.textContent.trim() : null;
     };
 
+    const priceText = getTextContent(platformSelectors.price);
+    const price = parseFloat(priceText?.replace(/[^0-9.]/g, '') || '0');
+
     return {
       sessionId: this.generateSessionId(),
       platform: this.currentPlatform,
       productUrl: window.location.href,
       productTitle: getTextContent(platformSelectors.title),
-      price: getTextContent(platformSelectors.price),
+      price: price,
       productCategory: getTextContent(platformSelectors.category),
-      timespent: 1,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      username: this.username // Include username in product info
     };
   }
 
-  // Generate unique session ID
   generateSessionId() {
-    return `${this.currentPlatform}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    return `${this.currentPlatform}-${this.username}-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
 
-  // Track user interaction metrics
   trackUserInteraction() {
     let scrollDepth = 0;
     let lastScrollTime = null;
 
-    // Track scroll depth
     document.addEventListener('scroll', () => {
       const currentScroll = window.scrollY;
       const maxScroll = document.documentElement.scrollHeight - window.innerHeight;
@@ -115,7 +132,6 @@ class ProductTracker {
       lastScrollTime = new Date();
     });
 
-    // Return tracking data when needed
     return {
       scrollDepth: Math.round(scrollDepth),
       timeSpent: lastScrollTime ? 
@@ -123,28 +139,24 @@ class ProductTracker {
     };
   }
 
-  // Initialize tracking
   initialize() {
-    if (!this.isProductPage()){
-      return;
-    } 
+    if (!this.isProductPage()) return;
 
     const productInfo = this.getProductInfo();
     if (!productInfo) return;
 
     // Send initial page view data
-    chrome.storage.local.get(['authToken'], (result) => {
-      chrome.runtime.sendMessage({
-        type: 'PRODUCT_VIEW',
-        data: {
-          ...productInfo,
-          eventType: 'VIEW',
-          username: result.authToken
-        }
-      });
+    chrome.runtime.sendMessage({
+      type: 'PRODUCT_VIEW',
+      data: {
+        ...productInfo,
+        eventType: 'VIEW'
+      }
+    }, response => {
+      if (response?.error) {
+        console.error('Error recording product view:', response.error);
+      }
     });
-
-    console.log('message sent')
 
     // Track user interaction
     const interactionMetrics = this.trackUserInteraction();
@@ -164,35 +176,26 @@ class ProductTracker {
   }
 }
 
-
-console.log("Content script loaded"); // Debug loading
-
+// Handle login messages from the webpage
 window.addEventListener("message", function(event) {
-    console.log("Message received in content script:", event.data); // Debug incoming messages
+    if (event.origin !== "http://localhost:3006") return;
     
-    // Make sure we're only accepting messages from our webpage
-    if (event.origin !== "http://localhost:3006") {
-        console.log("Wrong origin:", event.origin);
-        return;
-    }
-    
-    if (event.data.type === "FROM_PAGE") {
-        console.log("Valid message received, sending to background");
+    if (event.data.type === "FROM_PAGE" && event.data.userData) {
         chrome.runtime.sendMessage({ 
             action: "LOGIN_SUCCESS", 
-            token: event.data.token 
+            userData: {
+                username: event.data.userData.username,
+                token: event.data.userData.token
+            }
         }).then(response => {
-            console.log("Background script response:", response);
+            console.log("Login processed:", response);
+            // Reload tracker after successful login
+            new ProductTracker();
         }).catch(error => {
-            console.log("Error sending message to background:", error);
+            console.error("Login error:", error);
         });
     }
 });
-function checkLoginState() {
-  chrome.storage.local.get(['authToken'], (result) => {
-      console.log('Current auth state:', result.authToken ? 'logged in' : 'not logged in');
-  });
-}
 
 // Initialize tracker when page loads
 new ProductTracker();

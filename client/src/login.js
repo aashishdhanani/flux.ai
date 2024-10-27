@@ -21,63 +21,71 @@ const Login = () => {
     budget: ''
   });
 
+  function handleLoginSuccess(response) {
+    if (response.data.success) {
+      // Send message to extension
+      window.postMessage({
+        type: "FROM_PAGE",
+        userData: {
+          username: response.data.userData.username,
+          token: response.data.userData.token
+        }
+      }, "http://localhost:3006");
+  
+      console.log("Sent login data to extension:", response.data);
+      navigate('/home');
+    } else {
+      console.error('Login failed:', response.data.message);
+      alert(response.data.message);
+    }
+  }
+
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    console.log('Attempting login with:', loginValues);
+    
     try {
-        const res = await axios.post('http://localhost:3000/login', loginValues);
-        if (res.status === 200) {
-            // Debug log before sending message
-            console.log("Sending post message to extension");
-            
-            // Send message with more specific targeting
-            window.postMessage(
-                { 
-                    type: "FROM_PAGE", 
-                    token: res.data.username,
-                    source: "loginComponent" // helps with debugging
-                }, 
-                "http://localhost:3006" // Be specific with target origin
-            );
-            
-            // Debug log after sending
-            console.log("Post message sent");
-            
-            navigate('/home');
-        }
-        alert(res.data.message);
-    } catch (err) {
-        console.error("Login error:", err);
-    }
-};
-const handleInputChange = (e) => {
-  const { name, value } = e.target;
-  setAccountValues(prev => ({
-    ...prev,
-    [name]: value
-  }));
-};
+      const response = await axios.post('http://localhost:3000/login', {
+        username: loginValues.username,
+        password: loginValues.password
+      });
 
-const handleAddGoal = (e) => {
-  e.preventDefault();
-  if (accountValues.currentGoal.trim()) {
+      console.log('Login response:', response);
+      handleLoginSuccess(response);
+    } catch (error) {
+      console.error('Login error:', error);
+      alert(error.response?.data?.message || 'Login failed');
+    }
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
     setAccountValues(prev => ({
       ...prev,
-      goals: [...prev.goals, prev.currentGoal.trim()],
-      currentGoal: '' // Reset the input after adding
+      [name]: value
     }));
-  }
-};
+  };
 
-const handleRemoveGoal = (index) => {
-  setAccountValues(prev => ({
-    ...prev,
-    goals: prev.goals.filter((_, i) => i !== index)
-  }));
-};
+  const handleAddGoal = (e) => {
+    e.preventDefault();
+    if (accountValues.currentGoal.trim()) {
+      setAccountValues(prev => ({
+        ...prev,
+        goals: [...prev.goals, prev.currentGoal.trim()],
+        currentGoal: ''
+      }));
+    }
+  };
+
+  const handleRemoveGoal = (index) => {
+    setAccountValues(prev => ({
+      ...prev,
+      goals: prev.goals.filter((_, i) => i !== index)
+    }));
+  };
 
   const handleAccountSubmit = async (e) => {
     e.preventDefault();
-    // Check if at least one goal is added
     if (accountValues.goals.length === 0) {
       alert("Please add at least one goal!");
       return;
@@ -87,6 +95,7 @@ const handleRemoveGoal = (index) => {
       alert("Please enter your budget!");
       return;
     }
+
     try {
       const response = await axios.post('http://localhost:3000/register', {
         username: accountValues.username,
@@ -94,21 +103,23 @@ const handleRemoveGoal = (index) => {
         password: accountValues.password,
         goals: accountValues.goals,
         budget: accountValues.budget
-      }).then(res => {
-        alert(res.data.message);
-        setAccountValues({
-          username: '',
-          email: '',
-          password: '',
-          passwordConfirm: '',
-          goals: [],
-          currentGoal: '',
-          budget: ''
-        });
       });
+      
+      alert(response.data.message);
+      setAccountValues({
+        username: '',
+        email: '',
+        password: '',
+        passwordConfirm: '',
+        goals: [],
+        currentGoal: '',
+        budget: ''
+      });
+      
       console.log("Success:", response.data);
     } catch (error) {
       console.error("Error:", error);
+      alert(error.response?.data?.message || 'Registration failed');
     }
   };
 
@@ -170,24 +181,23 @@ const handleRemoveGoal = (index) => {
       letterSpacing: '0.05em'
     },
     inputGroup: {
-        position: 'relative',
-        marginBottom: '1.5rem',
-        //display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center'
+      position: 'relative',
+      marginBottom: '1.5rem',
+      justifyContent: 'center',
+      alignItems: 'center'
     },
     input: {
-        width: '90%', // Reduced from 100% to give some margin on sides
-        padding: '1rem 1.2rem',
-        backgroundColor: 'rgba(0, 0, 0, 0.3)',
-        border: '1px solid rgba(255, 255, 255, 0.1)',
-        borderRadius: '12px',
-        color: '#fff',
-        fontSize: '1rem',
-        outline: 'none',
-        transition: 'all 0.3s ease',
-        letterSpacing: '0.03em',
-        textAlign: 'center' // Centers the text inside input
+      width: '90%',
+      padding: '1rem 1.2rem',
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: '12px',
+      color: '#fff',
+      fontSize: '1rem',
+      outline: 'none',
+      transition: 'all 0.3s ease',
+      letterSpacing: '0.03em',
+      textAlign: 'center'
     },
     button: {
       width: '100%',
@@ -213,7 +223,6 @@ const handleRemoveGoal = (index) => {
       color: 'white',
       boxShadow: '0 4px 15px rgba(45, 156, 206, 0.3)'
     },
-    // New styles for goals section
     goalInput: {
       width: '70%',
       padding: '1rem 1.2rem',
@@ -263,7 +272,6 @@ const handleRemoveGoal = (index) => {
     }
   };
 
-  // Enhanced hover effects
   const handleSectionHover = (e, enter) => {
     if (enter) {
       e.currentTarget.style.transform = 'translateZ(20px)';
@@ -349,64 +357,68 @@ const handleRemoveGoal = (index) => {
           <h2 style={styles.sectionTitle}>New to Flux? Sign up Here!</h2>
           <form onSubmit={handleAccountSubmit}>
             <div style={styles.inputGroup}>
-            <input
+              <input
                 type="text"
                 placeholder="Username"
-                value={accountValues.username}  // Add this line
-                onChange={e => setAccountValues({ ...accountValues, username: e.target.value })}
+                name="username"
+                value={accountValues.username}
+                onChange={handleInputChange}
                 style={styles.input}
                 onFocus={(e) => handleInputFocus(e, true)}
                 onBlur={(e) => handleInputFocus(e, false)}
-            />
-            <input
+              />
+              <input
                 type="text"
                 placeholder="Email"
-                value={accountValues.email}     // Add this line
-                onChange={e => setAccountValues({ ...accountValues, email: e.target.value })}
+                name="email"
+                value={accountValues.email}
+                onChange={handleInputChange}
                 style={styles.input}
                 onFocus={(e) => handleInputFocus(e, true)}
                 onBlur={(e) => handleInputFocus(e, false)}
-            />
-            <input
+              />
+              <input
                 type="password"
                 placeholder="Password"
-                value={accountValues.password}  // Add this line
-                onChange={e => setAccountValues({ ...accountValues, password: e.target.value })}
+                name="password"
+                value={accountValues.password}
+                onChange={handleInputChange}
                 style={styles.input}
                 onFocus={(e) => handleInputFocus(e, true)}
                 onBlur={(e) => handleInputFocus(e, false)}
-            />
-            <input
+              />
+              <input
                 type="password"
                 placeholder="Confirm Password"
-                value={accountValues.passwordConfirm}  // Add this line
-                onChange={e => setAccountValues({ ...accountValues, passwordConfirm: e.target.value })}
+                name="passwordConfirm"
+                value={accountValues.passwordConfirm}
+                onChange={handleInputChange}
                 style={styles.input}
                 onFocus={(e) => handleInputFocus(e, true)}
                 onBlur={(e) => handleInputFocus(e, false)}
-            />
+              />
             </div>
             {/* Goals Section */}
             <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
-                <input
-                  type="text"
-                  name="currentGoal"
-                  placeholder="Add a goal"
-                  value={accountValues.currentGoal}
-                  onChange={handleInputChange}
-                  style={styles.goalInput}
-                  onFocus={(e) => handleInputFocus(e, true)}
-                  onBlur={(e) => handleInputFocus(e, false)}
-                />
-                <button
-                  type="button"
-                  onClick={handleAddGoal}
-                  style={styles.addGoalButton}
-                  onMouseEnter={(e) => handleButtonHover(e, true)}
-                  onMouseLeave={(e) => handleButtonHover(e, false)}
-                >
-                  Add
-                </button>
+              <input
+                type="text"
+                name="currentGoal"
+                placeholder="Add a goal"
+                value={accountValues.currentGoal}
+                onChange={handleInputChange}
+                style={styles.goalInput}
+                onFocus={(e) => handleInputFocus(e, true)}
+                onBlur={(e) => handleInputFocus(e, false)}
+              />
+              <button
+                type="button"
+                onClick={handleAddGoal}
+                style={styles.addGoalButton}
+                onMouseEnter={(e) => handleButtonHover(e, true)}
+                onMouseLeave={(e) => handleButtonHover(e, false)}
+              >
+                Add
+              </button>
               </div>
 
               <div style={styles.goalsList}>

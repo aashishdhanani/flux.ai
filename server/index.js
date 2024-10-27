@@ -130,9 +130,9 @@ const ProductEvent = mongoose.model('ProductEvent', ProductEventSchema);
 
 // Validate event payload middleware
 const validateEventPayload = (req, res, next) => {
-  const { sessionId, platform, productUrl, productTitle, userId } = req.body;
+  const { sessionId, platform, productUrl, productTitle, username } = req.body;
   
-  if (!sessionId || !platform || !productUrl || !productTitle || !userId) {
+  if (!sessionId || !platform || !productUrl || !productTitle || !username) {
     return res.status(400).json({
       error: 'Missing required fields',
       requiredFields: ['sessionId', 'platform', 'productUrl', 'productTitle', 'userId']
@@ -144,8 +144,8 @@ const validateEventPayload = (req, res, next) => {
 // Record product event
 app.post('/api/events', validateEventPayload, async (req, res) => {
   try {
-    // Check if user exists
-    const user = await User.findById(req.body.userId);
+    // Look up user by username instead of ID
+    const user = await User.findOne({ username: req.body.username });
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -154,7 +154,8 @@ app.post('/api/events', validateEventPayload, async (req, res) => {
     }
 
     const eventData = new ProductEvent({
-      ...req.body
+      ...req.body,
+      userId: user._id  // Store the user's ID in the event
     });
 
     await eventData.save();
@@ -338,7 +339,7 @@ app.post('/register', async (req, res) => {
 // Login route
 app.post('/login', async (req, res) => {
   const {username, password} = req.body;
-  console.log(req.body);
+  console.log("Login attempt for:", username);
 
   if (!username || !password) {
     return res.status(400).json({ message: 'Username and password are required' });
@@ -346,7 +347,7 @@ app.post('/login', async (req, res) => {
 
   try {
     const user = await User.findOne({ username });
-    console.log(user);
+    console.log("Found user:", user ? "yes" : "no");
 
     if (!user) {
       return res.status(400).json({ message: 'User not found' });
@@ -356,18 +357,18 @@ app.post('/login', async (req, res) => {
       return res.status(400).json({ message: 'Invalid credentials' });
     }
 
+    // Send back a more specific response for the extension
     res.json({ 
-      message: 'Login successful', 
-      user: {
-        id: user._id,
+      success: true,
+      message: 'Login successful',
+      userData: {
         username: user.username,
-        email: user.email,
-        goals: user.goals,
-        budget: user.budget
+        token: 'logged-in' // Simple token for now, you might want to implement proper JWT
       }
     });
   } catch (err) {
-    res.status(400).json({ message: 'Error', error: err });
+    console.error("Login error:", err);
+    res.status(400).json({ message: 'Error during login', error: err.message });
   }
 });
 

@@ -27,29 +27,23 @@ body::before {
   transform: perspective(600px) rotateX(40deg) ;
 
 
-  animation:  light 5s infinite;
+
   
   transform-origin: 50% 50%;
   pointer-events: none;
+  animation: waveAnimation 6s infinite linear;
 }
 
-
-@keyframes light {
-
-  /* 0% {
-    background: 
-    linear-gradient(rgba(255, 255, 255, 0.4) 4%, transparent 0%, rgba(45, 156, 206, 0.1) 96%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.4) 4%, transparent 0%, rgba(45, 156, 206, 0.1) 100%);
-
+@keyframes waveAnimation {
+  0% {
+    background-position: 0 0;
   }
   100% {
-    background: 
-    linear-gradient(rgba(255, 255, 255, 0.8) 4%, transparent 0%, rgba(45, 156, 206, 0.1) 96%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.8) 4%, transparent 0%, rgba(45, 156, 206, 0.1) 100%);
-
-  } */
-  
+    background-position: 100px 50px; /* Adjust these values for desired movement speed and direction */
+  }
 }
+
+
 
 body {
   height: 100vh;

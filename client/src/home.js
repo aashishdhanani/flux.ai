@@ -139,7 +139,6 @@ const Home = () => {
   const styles = {
     container: {
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #1a1a1a, #2D9CCE 140%)',
       padding: '2rem'
     },
     header: {

@@ -7,16 +7,16 @@
    ```plaintext
    PORT=
    MONGODB_URI=
-   URL=```
+   URL=
 
 2. Install dependencies
 ```
     npm install
     cd client
-    npm install```
+    npm install
 
 3. Start 
     ```mongod --dbpath data/db
     npm start
     cd client
-    npm start```
+    npm start

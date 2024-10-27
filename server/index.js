@@ -237,3 +237,75 @@ process.on('SIGTERM', () => {
 });
 
 module.exports = app;
+app.use(express.urlencoded({ extended: true }));
+
+//user schema
+const userSchema = new mongoose.Schema({
+  username: {type: String, required: true, unique: true},
+  email: { type: String, required: true},
+  password: { type: String, required: true },
+});
+const User = mongoose.model('User', userSchema);
+module.exports = { User };
+
+//register route
+app.post('/register', async (req, res) => {
+  const {username, email, password} = req.body;
+  console.log("Received data:", req.body);
+
+  // Validate input
+  if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required' });
+  }
+
+  try {
+      const newUser = new User({
+          username: username,
+          email: email,
+          password: password
+      });
+
+      console.log("Attempting to save user:", newUser);
+      
+      const user = await newUser.save();
+      console.log("User saved successfully:", user);
+      
+      res.json({ message: 'Registration successful', user });
+  } catch (err) {
+      console.error("Error saving user:", err);
+      return res.status(400).json({ 
+          message: 'Error creating user', 
+          error: err.message  // Send the actual error message
+      });
+  }
+});
+
+//login route
+app.post('/login', async (req, res) => {
+  const {username, password} = req.body;
+  console.log(req.body);
+
+  if (!username || !password) {
+    return res.status(400).json({ message: 'Name and password are required' });
+  }
+
+  try {
+    const user = await User.findOne({ username });
+    console.log(user);
+
+    if (!user) {
+      return res.status(400).json({ message: 'User not found' });
+    }
+
+    //const isMatch = await bcrypt.compare(password, user.password);
+
+    if (password != user.password) {
+      return res.status(400).json({ message: 'Invalid credentials' });
+    }
+
+    res.json({ message: 'Login successful', user });
+  } catch (err) {
+    res.status(400).json({ message: 'Error', error: err });
+  }
+});
+

@@ -9,7 +9,7 @@ import reportWebVitals from './reportWebVitals';
 
 import Categories from './recpages/categories';
 import Patterns from './recpages/patterns';
-import MostViewed from './recpages/mostviewed';
+import Spending from './recpages/spending';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
@@ -19,7 +19,7 @@ root.render(
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<Home />} />
         <Route path="/categories" element={<Categories />} />
-        <Route path="/mostviewed" element={<MostViewed />} />
+        <Route path="/spending" element={<Spending />} />
         <Route path="/patterns" element={<Patterns />} />
         <Route path="/" element={<Navigate to="/login" />} />
       </Routes>

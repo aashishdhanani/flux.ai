@@ -184,8 +184,7 @@ const Home = () => {
         <div style={styles.headerContent}>
           <div>
             <h1 style={styles.title}>FLUX</h1>
-            <p style={{color: 'white', fontSize: '25px'}}>"Shopping at 88mph"</p>
-            <button>Logout</button>
+            <p style={{color: '#8c0389', fontSize: '25px'}}>"Shopping at 88mph"</p>
           </div>
         </div>
       </div>
@@ -198,7 +197,7 @@ const Home = () => {
           </p>
         </DashboardCard>
 
-        <DashboardCard title="Timeline Analysis" icon={Clock} color={colors.timeline} to='/mostviewed'>
+        <DashboardCard title="Spending Analysis" icon={Clock} color={colors.timeline} to='/spending'>
           <p style={{ color: colors.timeline, fontSize: '1.1rem', lineHeight: '1.6' }}>
             Your shopping patterns<br/>across time
           </p>

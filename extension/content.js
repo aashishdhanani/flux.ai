@@ -125,9 +125,7 @@ class ProductTracker {
   
     // Initialize tracking
     initialize() {
-      console.log("It is being started")
       if (!this.isProductPage()){
-        console.log("not page")
         return;
       } 
   
@@ -162,6 +160,30 @@ class ProductTracker {
     }
   }
   
+
+  console.log("Content script loaded"); // Debug loading
+
+  window.addEventListener("message", function(event) {
+      console.log("Message received in content script:", event.data); // Debug incoming messages
+      
+      // Make sure we're only accepting messages from our webpage
+      if (event.origin !== "http://localhost:3006") {
+          console.log("Wrong origin:", event.origin);
+          return;
+      }
+      
+      if (event.data.type === "FROM_PAGE") {
+          console.log("Valid message received, sending to background");
+          chrome.runtime.sendMessage({ 
+              action: "LOGIN_SUCCESS", 
+              token: event.data.token 
+          }).then(response => {
+              console.log("Background script response:", response);
+          }).catch(error => {
+              console.log("Error sending message to background:", error);
+          });
+      }
+  });
+
   // Initialize tracker when page loads
   new ProductTracker();
-  console.log("Content script loaded on:", window.location.href);

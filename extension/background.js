@@ -54,5 +54,40 @@ class ProductAnalyticsService {
     }
   }
   
+  chrome.runtime.onInstalled.addListener(() => {
+    chrome.storage.local.set({ authToken: null }, () => {
+        console.log('Initial storage set');
+    });
+});
+
+// Listen for messages from content script
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    console.log("Background script received message:", request); // Debug incoming messages
+    
+    if (request.action === 'LOGIN_SUCCESS') {
+        const token = request.token;
+        console.log('Processing login token:', token);
+        
+        // Store the token
+        chrome.storage.local.set({ authToken: token }, () => {
+            console.log('Token saved to storage');
+            // Send response back to content script
+            sendResponse({ status: 'success', message: 'Token stored' });
+        });
+        
+        // Important: return true to indicate we'll respond asynchronously
+        return true;
+    }
+});
+
+// Function to check login state
+function checkLoginState() {
+    chrome.storage.local.get(['authToken'], (result) => {
+        console.log('Current auth state:', result.authToken ? 'logged in' : 'not logged in');
+    });
+}
+
+// Check login state periodically
+setInterval(checkLoginState, 5000);
   // Initialize analytics service
   new ProductAnalyticsService();

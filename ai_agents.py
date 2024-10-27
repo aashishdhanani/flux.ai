@@ -6,7 +6,7 @@ import json
 from typing import Dict, Any
 from pymongo import MongoClient
 
-os.environ["GROQ_API_KEY"] = "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"
+os.environ["GROQ_API_KEY"] = ""
 
 # Initialize the LLM (ensure GROQ_API_KEY is set in your environment)
 llm = ChatGroq(model="llama3-8b-8192")
@@ -427,6 +427,14 @@ def generate_financial_advice(username: str):
         data=data1,
         user_info=user_info
     )
+    while not explanation1:
+        explanation1 = generate_graph_explanation(
+            graph_title="Total Spending by Product Category",
+            x_variable="Product Categories",
+            y_variable="Total Spending",
+            data=data1,
+            user_info=user_info
+        )
 
     # Graph 2: Total Spending by Brand
     data2 = compute_total_spending_by_brand(products)
@@ -437,6 +445,14 @@ def generate_financial_advice(username: str):
         data=data2,
         user_info=user_info
     )
+    while not explanation2:
+        explanation2 = generate_graph_explanation(
+            graph_title="Total Spending by Brand",
+            x_variable="Product Brands",
+            y_variable="Total Spending",
+            data=data2,
+            user_info=user_info,
+        )
 
     # Graph 3: Spending Distribution Across E-commerce Sites
     data3 = compute_spending_by_ecommerce_site(products)
@@ -447,6 +463,14 @@ def generate_financial_advice(username: str):
         data=data3,
         user_info=user_info
     )
+    while not explanation3:
+        explanation3 = generate_graph_explanation(
+            graph_title="Spending Distribution Across E-commerce Sites",
+            x_variable="E-commerce Sites",
+            y_variable="Total Spending",
+            data=data3,
+            user_info=user_info
+        )
 
     # Graph 4: Average Spending per Purchase
     data4 = compute_average_spending_per_purchase(products)
@@ -457,6 +481,14 @@ def generate_financial_advice(username: str):
         data={"purchase_prices": data4},
         user_info=user_info
     )
+    while not explanation4:
+        explanation4 = generate_graph_explanation(
+            graph_title="Average Spending per Purchase",
+            x_variable="Individual Purchases",
+            y_variable="Purchase Amount",
+            data={"purchase_prices": data4},
+            user_info=user_info
+        )
 
     # Graph 5: Number of Purchases per Product Category
     data5 = compute_number_of_purchases_by_category(products)
@@ -467,6 +499,14 @@ def generate_financial_advice(username: str):
         data=data5,
         user_info=user_info
     )
+    while not explanation5:
+        explanation5 = generate_graph_explanation(
+            graph_title="Number of Purchases per Product Category",
+            x_variable="Product Categories",
+            y_variable="Number of Purchases",
+            data=data5,
+            user_info=user_info
+        )
     
     # Collect all graph explanations
     graph_explanations = [explanation1, explanation2, explanation3, explanation4, explanation5]

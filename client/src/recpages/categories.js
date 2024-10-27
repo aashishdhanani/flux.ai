@@ -1,15 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect} from 'react';
 import Sidebar from './llm.js';
+import axios from "axios";
 
 
 const orange = "#E4801D"
 const yellow = "#F7DC11"
-const CategoryCard = ({ title, children, img, products, color }) => {
+const CategoryCard = ({ title, products, color }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [isFlipped, setFlip] = useState(false);
-  const [cardContent, setContent] = useState(title);
-
-
+  const [cardContent, setContent] = useState([title]);
 
   const styles = {
     card: {
@@ -85,7 +84,7 @@ const CategoryCard = ({ title, children, img, products, color }) => {
     setFlip(!isFlipped);
     setTimeout(() => {
       if (isFlipped) {
-        setContent(title);
+        setContent([title]);
       } else {
         setContent(products)
       }
@@ -113,7 +112,13 @@ const CategoryCard = ({ title, children, img, products, color }) => {
           
           <div style={{...styles.cardContent, transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)'}}>
             <div style={styles.headerSection}>
-              <h2 style={ isFlipped ? styles.products : styles.title }>{cardContent}</h2>
+              {cardContent.map((content, index) => (
+                <div>
+                <h2 style={ isFlipped ? styles.products : styles.title }>{content}</h2>
+                <br></br>
+                </div>
+              ))}
+        
             </div>
             
           </div>
@@ -123,6 +128,21 @@ const CategoryCard = ({ title, children, img, products, color }) => {
 };
 
 const Categories = () => {
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get("http://localhost:3000/categories");
+        setCategories(response.data); 
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
     const styles = {
         container: {
           margin: "0px 30px",
@@ -170,21 +190,23 @@ const Categories = () => {
             <h2 style={styles.title}>Browsing Habits</h2>
             <h2 style= {styles.category}>Categories</h2>
             <div style = {{marginTop: "20px", marginBottom: "20px", display: 'flex', flexWrap: 'wrap'}}>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {yellow}></CategoryCard>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {yellow}></CategoryCard>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {yellow}></CategoryCard>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {yellow}></CategoryCard>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {yellow}></CategoryCard>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {yellow}></CategoryCard>
+              {categories.map((category, index) => (
+                <CategoryCard
+                  key={index}
+                  title={category.title} //change if needed
+                  products={category.products}
+                  color="yellow"
+                />
+              ))}
             </div>
             <h2 style= {styles.brands}>Brands/Vendors</h2>
             <div style = {{marginTop: "20px", display: 'flex', flexWrap: 'wrap'}}>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {orange}></CategoryCard>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {orange}></CategoryCard>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {orange}></CategoryCard>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {orange}></CategoryCard>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {orange}></CategoryCard>
-              <CategoryCard title="Placeholder Category" img="placeholder_image.jpg" products = "placeholder products" color = {orange}></CategoryCard>
+              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
+              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
+              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
+              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
+              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
+              <CategoryCard title="Placeholder Category" products = "placeholder products" color = {orange}></CategoryCard>
             </div>
       
         </div>

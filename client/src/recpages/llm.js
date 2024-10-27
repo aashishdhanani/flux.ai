@@ -46,7 +46,7 @@ const Sidebar = () => {
     if (isExpanded) {
       if (!calledAI) {
         setCalledAI(true)
-        axios.get("http://localhost:3000/categories").then((response) => {
+        axios.get("http://localhost:3000/AI_categories_brands_consult").then((response) => {
           console.log(response.data.text);
           setText(response.data.text);
           setDisplayedText(""); // Reset displayed text when sidebar is expanded

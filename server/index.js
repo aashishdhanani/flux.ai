@@ -314,8 +314,22 @@ app.post('/login', async (req, res) => {
 
 //AI category analysis
 
-app.get("/categories", (req, res) => {
+app.get("/AI_categories_brands_consult", (req, res) => {
   const textData = "This is the text from the backend that will appear gradually.";
-  console.log("a")
   res.json({ text: textData });
+});
+
+app.get("/categories", (req, res) => {
+  const categories = [
+    {
+      title: "Category 1",
+      products: ["Product 1", "Product 2", "Product 3"],
+    },
+    {
+      title: "Category 2",
+      products: ["Product A", "Product B"],
+    },
+  ];
+
+  res.json(categories);
 });

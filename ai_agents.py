@@ -5,9 +5,8 @@ from pydantic import BaseModel, Field
 import json
 from typing import Dict, Any
 from pymongo import MongoClient
-from bson.objectid import ObjectId
 
-os.environ["GROQ_API_KEY"] = ""
+os.environ["GROQ_API_KEY"] = "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"
 
 # Initialize the LLM (ensure GROQ_API_KEY is set in your environment)
 llm = ChatGroq(model="llama3-8b-8192")
@@ -58,12 +57,12 @@ extraction_structured_llm = llm.with_structured_output(BrandCategoryExtractionOu
 # Initialize MongoDB Client
 MONGODB_URI = os.getenv("MONGODB_URI", "mongodb://localhost:27017")  # Replace with your MongoDB URI
 client = MongoClient(MONGODB_URI)
-db = client['your_database_name']  # Replace with your database name
+db = client['ecommerce_tracker']  # Replace with your database name
 users_collection = db['users']
 productevents_collection = db['productevents']
 
 # Function to fetch user data and products from MongoDB
-def fetch_user_data(username: str) -> Tuple[Dict[str, Any], List[Dict[str, Any]]]:
+def fetch_user_data(username: str):
     # Fetch user document by username
     user = users_collection.find_one({'username': username})
     if not user:

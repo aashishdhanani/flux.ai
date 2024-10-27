@@ -18,12 +18,12 @@ body::before {
   width: 200%;
   height: 280%;
   background: 
-    linear-gradient(rgba(255, 255, 255, 0.5) 4%, transparent 0%, rgba(45, 156, 206, 0.1) 96%),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.5) 4%, transparent 0%, rgba(45, 156, 206, 0.1) 100%);
+    linear-gradient(rgba(255, 255, 255, 0.8) 4%, transparent 0%, rgba(45, 156, 206, 0.1) 96%),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.8) 4%, transparent 0%, rgba(45, 156, 206, 0.1) 100%);
 
   background-size: 50px 50px;
-  /* background-image: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0)); */
-  /* background-position: 1px 1px; */
+
+
   transform: perspective(600px) rotateX(40deg) ;
 
 

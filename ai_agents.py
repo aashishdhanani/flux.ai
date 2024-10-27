@@ -5,8 +5,10 @@ from pydantic import BaseModel, Field
 import json
 from typing import Dict, Any
 from pymongo import MongoClient
+from dotenv import load_dotenv
+load_dotenv()
 
-os.environ["GROQ_API_KEY"] = ""
+
 
 # Initialize the LLM (ensure GROQ_API_KEY is set in your environment)
 llm = ChatGroq(model="llama3-8b-8192")

@@ -15,7 +15,10 @@ const Login = () => {
     username: '',
     email: '',
     password: '',
-    passwordConfirm: ''
+    passwordConfirm: '',
+    goals: [],
+    currentGoal: '',
+    budget: ''
   });
 
   const handleLoginSubmit = async (e) => {
@@ -46,21 +49,61 @@ const Login = () => {
         console.error("Login error:", err);
     }
 };
+const handleInputChange = (e) => {
+  const { name, value } = e.target;
+  setAccountValues(prev => ({
+    ...prev,
+    [name]: value
+  }));
+};
+
+const handleAddGoal = (e) => {
+  e.preventDefault();
+  if (accountValues.currentGoal.trim()) {
+    setAccountValues(prev => ({
+      ...prev,
+      goals: [...prev.goals, prev.currentGoal.trim()],
+      currentGoal: '' // Reset the input after adding
+    }));
+  }
+};
+
+const handleRemoveGoal = (index) => {
+  setAccountValues(prev => ({
+    ...prev,
+    goals: prev.goals.filter((_, i) => i !== index)
+  }));
+};
 
   const handleAccountSubmit = async (e) => {
     e.preventDefault();
+    // Check if at least one goal is added
+    if (accountValues.goals.length === 0) {
+      alert("Please add at least one goal!");
+      return;
+    }
+
+    if (accountValues.budget.length === 0) {
+      alert("Please enter your budget!");
+      return;
+    }
     try {
       const response = await axios.post('http://localhost:3000/register', {
         username: accountValues.username,
         email: accountValues.email,
-        password: accountValues.password
+        password: accountValues.password,
+        goals: accountValues.goals,
+        budget: accountValues.budget
       }).then(res => {
         alert(res.data.message);
         setAccountValues({
-            username: '',
-            email: '',
-            password: '',
-            passwordConfirm: ''
+          username: '',
+          email: '',
+          password: '',
+          passwordConfirm: '',
+          goals: [],
+          currentGoal: '',
+          budget: ''
         });
       });
       console.log("Success:", response.data);
@@ -169,6 +212,54 @@ const Login = () => {
       background: 'linear-gradient(45deg, #2D9CCE, #E4801D)',
       color: 'white',
       boxShadow: '0 4px 15px rgba(45, 156, 206, 0.3)'
+    },
+    // New styles for goals section
+    goalInput: {
+      width: '70%',
+      padding: '1rem 1.2rem',
+      backgroundColor: 'rgba(0, 0, 0, 0.3)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      borderRadius: '12px',
+      color: '#fff',
+      fontSize: '1rem',
+      outline: 'none',
+      transition: 'all 0.3s ease',
+      letterSpacing: '0.03em',
+      textAlign: 'center'
+    },
+    addGoalButton: {
+      width: '20%',
+      padding: '1rem',
+      marginLeft: '10px',
+      border: 'none',
+      borderRadius: '12px',
+      background: 'linear-gradient(45deg, #F7DC11, #E4801D)',
+      color: 'white',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease'
+    },
+    goalsList: {
+      marginTop: '1rem',
+      width: '90%',
+      margin: '0 auto'
+    },
+    goalItem: {
+      display: 'flex',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: '0.5rem 1rem',
+      backgroundColor: 'rgba(0, 0, 0, 0.2)',
+      borderRadius: '8px',
+      marginBottom: '0.5rem',
+      color: '#fff'
+    },
+    removeGoalButton: {
+      background: 'none',
+      border: 'none',
+      color: '#ff4444',
+      cursor: 'pointer',
+      fontSize: '1.2rem',
+      padding: '0 0.5rem'
     }
   };
 
@@ -295,6 +386,56 @@ const Login = () => {
                 onBlur={(e) => handleInputFocus(e, false)}
             />
             </div>
+            {/* Goals Section */}
+            <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '1rem' }}>
+                <input
+                  type="text"
+                  name="currentGoal"
+                  placeholder="Add a goal"
+                  value={accountValues.currentGoal}
+                  onChange={handleInputChange}
+                  style={styles.goalInput}
+                  onFocus={(e) => handleInputFocus(e, true)}
+                  onBlur={(e) => handleInputFocus(e, false)}
+                />
+                <button
+                  type="button"
+                  onClick={handleAddGoal}
+                  style={styles.addGoalButton}
+                  onMouseEnter={(e) => handleButtonHover(e, true)}
+                  onMouseLeave={(e) => handleButtonHover(e, false)}
+                >
+                  Add
+                </button>
+              </div>
+
+              <div style={styles.goalsList}>
+                {accountValues.goals.map((goal, index) => (
+                  <div key={index} style={styles.goalItem}>
+                    <span>{goal}</span>
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveGoal(index)}
+                      style={styles.removeGoalButton}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+              </div>
+              <div style={styles.inputGroup}>
+                <input
+                  type='Number'
+                  name="budget"
+                  placeholder="budget"
+                  value={accountValues.budget}
+                  onChange={handleInputChange}
+                  style={styles.input}
+                  onFocus={(e) => handleInputFocus(e, true)}
+                  onBlur={(e) => handleInputFocus(e, false)}
+                />
+              </div>
+        
             <button
               type="submit"
               style={{...styles.button, ...styles.signupButton}}

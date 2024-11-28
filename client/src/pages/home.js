@@ -1,7 +1,7 @@
 import React from 'react';
 import { Clock, Eye, Brain } from 'lucide-react';
 import TransitionOverlay from './transistionOverlay';
-import DashboardCard from './DashboardCard';
+import DashboardCard from '../components/DashboardCard';
 import '../styles/Home.css';
 
 const COLORS = {

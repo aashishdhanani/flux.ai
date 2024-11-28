@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import TransitionOverlay from './transistionOverlay';
+import TransitionOverlay from '../pages/transistionOverlay';
 import '../styles/DashboardCard.css';
 
 const DashboardCard = ({ title, icon: Icon, children, color, to }) => {

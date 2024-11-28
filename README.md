@@ -17,6 +17,7 @@
 ```
 3. Start 
 ``` 
+    mkdir dbpath/db
     mongod --dbpath data/db
     npm start
     cd client

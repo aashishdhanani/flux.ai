@@ -1,0 +1,78 @@
+/* src/styles/DashboardCard.css */
+.dashboard-card {
+    position: relative;
+    padding: 2rem;
+    height: 300px;
+    background: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8));
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    cursor: default;
+  }
+  
+  .dashboard-card.hovered {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5), 0 0 30px var(--card-color);
+    cursor: pointer;
+  }
+  
+  .glow-border {
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: 20px;
+    background: linear-gradient(45deg, color-mix(in srgb, var(--card-color) 25%, transparent), var(--card-color));
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+  }
+  
+  .dashboard-card.hovered .glow-border {
+    opacity: 1;
+  }
+  
+  .inner-background {
+    position: absolute;
+    inset: 2px;
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8));
+  }
+  
+  .card-content {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .header-section {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .card-icon {
+    transition: transform 0.3s ease;
+  }
+  
+  .card-icon.hovered {
+    transform: scale(1.1);
+  }
+  
+  .card-title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+  }
+  
+  .content-section {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+  }

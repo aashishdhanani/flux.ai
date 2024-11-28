@@ -1,0 +1,40 @@
+/* src/styles/Categories.css */
+.categories-container {
+    margin: 0 30px;
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+  .main-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, #B50D13, #E4801D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.15em;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+  }
+  
+  .section-title {
+    margin: 0 20px;
+    text-align: center;
+    font-size: 3.5rem;
+    font-weight: 800;
+    letter-spacing: 0.15em;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+  }
+  
+  .section-title.yellow {
+    color: #F7DC11;
+  }
+  
+  .section-title.orange {
+    color: #E4801D;
+  }
+  
+  .card-grid {
+    margin-top: 20px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-wrap: wrap;
+  }

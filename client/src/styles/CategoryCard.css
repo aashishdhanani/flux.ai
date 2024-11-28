@@ -1,0 +1,76 @@
+/* src/styles/CategoryCard.css */
+.category-card {
+    position: relative;
+    padding: 2rem;
+    height: 280px;
+    width: 220px;
+    margin: 20px;
+    background: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8));
+    border-radius: 20px;
+    backdrop-filter: blur(20px);
+    border: 2px solid var(--card-color);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    overflow: hidden;
+    cursor: default;
+    perspective: 1000px;
+  }
+  
+  .category-card.hovered {
+    transform: translateY(-5px);
+    cursor: pointer;
+  }
+  
+  .category-card.flipped {
+    transform: rotateY(180deg);
+  }
+  
+  .glow-border {
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: 20px;
+    background: linear-gradient(45deg, color-mix(in srgb, var(--card-color) 25%, transparent), var(--card-color));
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+  }
+  
+  .category-card.hovered .glow-border {
+    opacity: 1;
+  }
+  
+  .inner-background {
+    position: absolute;
+    inset: 2px;
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8));
+  }
+  
+  .card-content {
+    height: 100%;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.3s ease;
+    transform-style: preserve-3d;
+  }
+  
+  .card-content.flipped {
+    transform: rotateY(180deg);
+  }
+  
+  .header-section {
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .card-title,
+  .card-products {
+    color: var(--card-color);
+    font-size: 1.5rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+  }
+  
+  .card-products {
+    font-size: 1.1rem;
+  }

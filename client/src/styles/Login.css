@@ -1,0 +1,179 @@
+/* styles.css */
+.container {
+    min-height: 100vh;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+  }
+  
+  .title {
+    font-size: 4.5rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, #F7DC11, #E4801D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-align: center;
+    margin-bottom: 3rem;
+    letter-spacing: 0.15em;
+    text-shadow: 2px 2px 20px rgba(247, 220, 17, 0.3);
+    transform: perspective(500px) translateZ(0);
+    transition: transform 0.3s ease;
+  }
+  
+  .form-container {
+    display: flex;
+    gap: 3rem;
+    max-width: 1500px;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+    perspective: 1000px;
+  }
+  
+  .form-section {
+    flex: 1 1 400px;
+    background: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8));
+    backdrop-filter: blur(20px);
+    padding: 2.5rem;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    margin: 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  
+  .login-section {
+    border-left: 3px solid #B50D13;
+  }
+  
+  .signup-section {
+    border-left: 3px solid #2D9CCE;
+  }
+  
+  .section-title {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #F7DC11;
+    text-align: left;
+    margin-bottom: 2rem;
+    letter-spacing: 0.05em;
+  }
+  
+  .input-group {
+    position: relative;
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .form-input {
+    width: 90%;
+    padding: 1rem 1.2rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    letter-spacing: 0.03em;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+  
+  .form-input:focus {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-color: #F7DC11;
+    box-shadow: 0 0 15px rgba(247, 220, 17, 0.1);
+  }
+  
+  .submit-button {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 1rem;
+    letter-spacing: 0.05em;
+    margin-top: 2rem;
+  }
+  
+  .login-button {
+    background: linear-gradient(45deg, #B50D13, #D85116);
+    color: white;
+    box-shadow: 0 4px 15px rgba(181, 13, 19, 0.3);
+  }
+  
+  .signup-button {
+    background: linear-gradient(45deg, #2D9CCE, #E4801D);
+    color: white;
+    box-shadow: 0 4px 15px rgba(45, 156, 206, 0.3);
+  }
+  
+  .submit-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(247, 220, 17, 0.2);
+  }
+  
+  .goal-input-container {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+  
+  .goal-input {
+    width: 70%;
+    padding: 1rem 1.2rem;
+    background-color: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    color: #fff;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.3s ease;
+    letter-spacing: 0.03em;
+    text-align: center;
+  }
+  
+  .add-goal-button {
+    width: 20%;
+    padding: 1rem;
+    margin-left: 10px;
+    border: none;
+    border-radius: 12px;
+    background: linear-gradient(45deg, #F7DC11, #E4801D);
+    color: white;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  
+  .goals-list {
+    margin-top: 1rem;
+    width: 90%;
+    margin: 0 auto;
+  }
+  
+  .goal-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+    color: #fff;
+  }
+  
+  .remove-goal-button {
+    background: none;
+    border: none;
+    color: #ff4444;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0 0.5rem;
+  }

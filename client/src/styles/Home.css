@@ -1,0 +1,49 @@
+/* src/styles/Home.css */
+.dashboard-container {
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+  .dashboard-header {
+    background: linear-gradient(145deg, rgba(20, 20, 20, 0.9), rgba(30, 30, 30, 0.8));
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  }
+  
+  .header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    background: linear-gradient(45deg, #F7DC11, #E4801D);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.15em;
+    font-family: 'Segoe UI', 'Roboto', sans-serif;
+  }
+  
+  .header-subtitle {
+    color: #8c0389;
+    font-size: 25px;
+  }
+  
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+  
+  .card-description {
+    font-size: 1.1rem;
+    line-height: 1.6;
+  }

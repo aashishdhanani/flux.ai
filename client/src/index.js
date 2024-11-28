@@ -3,13 +3,13 @@ import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './styles/index.css';
-import Login from './login';
-import Home from './home';  // Create this file
+import Login from './pages/login';
+import Home from './pages/home';  // Create this file
 import reportWebVitals from './reportWebVitals';
 
-import Categories from './recpages/categories';
-import Patterns from './recpages/patterns';
-import Spending from './recpages/spending';
+import Categories from './pages/categories';
+import Patterns from './pages/patterns';
+import Spending from './pages/spending';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

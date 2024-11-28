@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react';
-import Sidebar from './llm.js';
+import Sidebar from '../components/llm.js';
 import axios from "axios";
 import { Bar } from "react-chartjs-2";
 import {

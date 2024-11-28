@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import deloreanImg from './images/bttfdelorean.png'
+import deloreanImg from '../images/bttfdelorean.png'
 
 const TransitionOverlay = ({ show, to, color = '#00ffff', onAnimationComplete }) => {
   const navigate = useNavigate();

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import "./styles/Login.css"
+import "../styles/Login.css"
 // API configuration
 const API_BASE_URL = 'http://localhost:3000/api/users';
 

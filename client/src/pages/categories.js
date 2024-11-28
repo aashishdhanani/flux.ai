@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from "axios";
 import Sidebar from './llm.js';
-import CategoryCard from './CategoryCard';
+import CategoryCard from './CategoryCard.js';
 import '../styles/Categories.css';
 
 const API_BASE_URL = 'http://localhost:3000/api';

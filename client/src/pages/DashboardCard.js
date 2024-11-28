@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import TransitionOverlay from './transistionOverlay';
-import './styles/DashboardCard.css';
+import '../styles/DashboardCard.css';
 
 const DashboardCard = ({ title, icon: Icon, children, color, to }) => {
   const [isHovered, setIsHovered] = useState(false);

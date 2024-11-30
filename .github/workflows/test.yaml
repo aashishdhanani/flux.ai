@@ -2,9 +2,9 @@ name: Test Application and Extension
 
 on:
   push:
-    branches: [  ]
+    branches: [ test ]
   pull_request:
-    branches: [  ]
+    branches: [ test ]
 
 jobs:
   test:
